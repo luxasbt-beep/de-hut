@@ -3,382 +3,286 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>De Hut 🏕️</title>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
-    --groen: #234d35;
-    --donkergroen: #13251a;
-    --licht: #f4f1e8;
-    --wit: #fffdf8;
-    --accent: #d99a36;
-    --rood: #b74335;
+    --groen:#234d35;
+    --donkergroen:#13251a;
+    --licht:#f4f1e8;
+    --wit:#fffdf8;
+    --accent:#d99a36;
+    --rood:#b74335;
 }
 
-* {
-    box-sizing: border-box;
-}
+* { box-sizing:border-box; }
 
 body {
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background: var(--licht);
-    color: #18231b;
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:var(--licht);
+    color:#18231b;
 }
-
-/* LOGIN */
-
-#authScreen {
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    background:
-        linear-gradient(135deg, #13251a, #234d35);
-}
-
-.auth-card {
-    background: var(--wit);
-    width: 100%;
-    max-width: 430px;
-    padding: 30px;
-    border-radius: 22px;
-    box-shadow: 0 10px 40px rgba(0,0,0,0.25);
-}
-
-.auth-logo {
-    text-align: center;
-    font-size: 55px;
-}
-
-.auth-card h1 {
-    text-align: center;
-    color: var(--groen);
-    margin: 5px 0;
-}
-
-.auth-card .subtitle {
-    text-align: center;
-    color: #687268;
-    margin-bottom: 25px;
-}
-
-.auth-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 20px;
-}
-
-.auth-tabs button {
-    flex: 1;
-    border: none;
-    padding: 11px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-.auth-tabs button.active {
-    background: var(--groen);
-    color: white;
-}
-
-.auth-tabs button:not(.active) {
-    background: #eeeeee;
-}
-
-.auth-message {
-    margin-top: 15px;
-    padding: 10px;
-    border-radius: 10px;
-    display: none;
-}
-
-.auth-message.error {
-    display: block;
-    background: #ffe5e1;
-    color: #9d2f24;
-}
-
-.auth-message.success {
-    display: block;
-    background: #e2f5e7;
-    color: #24733a;
-}
-
-/* HEADER */
 
 header {
-    background: linear-gradient(135deg, var(--donkergroen), var(--groen));
-    color: white;
-    padding: 30px 20px;
-    text-align: center;
+    background:linear-gradient(135deg,var(--donkergroen),var(--groen));
+    color:white;
+    padding:30px 20px;
+    text-align:center;
 }
 
 header h1 {
-    margin: 0;
-    font-size: 45px;
+    margin:0;
+    font-size:45px;
 }
 
 header p {
-    margin: 8px 0 0;
-    opacity: 0.85;
-    font-size: 17px;
+    margin:8px 0 0;
+    opacity:.85;
 }
-
-/* ACCOUNT */
-
-.account-bar {
-    background: #183321;
-    color: white;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-.logout {
-    border: none;
-    background: var(--rood);
-    color: white;
-    padding: 8px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-/* NAV */
 
 nav {
-    position: sticky;
-    top: 0;
-    z-index: 10;
-    background: white;
-    display: flex;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-    flex-wrap: wrap;
+    position:sticky;
+    top:0;
+    z-index:10;
+    background:white;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    padding:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+    flex-wrap:wrap;
 }
 
 nav button {
-    border: none;
-    background: #eeeeee;
-    padding: 11px 16px;
-    border-radius: 999px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
-}
-
-nav button:hover {
-    transform: translateY(-2px);
+    border:0;
+    background:#eee;
+    padding:11px 16px;
+    border-radius:999px;
+    font-weight:bold;
+    cursor:pointer;
 }
 
 nav button.active {
-    background: var(--groen);
-    color: white;
+    background:var(--groen);
+    color:white;
 }
-
-/* MAIN */
 
 main {
-    max-width: 1050px;
-    margin: 30px auto;
-    padding: 0 15px;
+    max-width:1050px;
+    margin:30px auto;
+    padding:0 15px;
 }
 
-.section {
-    display: none;
-}
-
-.section.active {
-    display: block;
-}
+.section { display:none; }
+.section.active { display:block; }
 
 .grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
 }
 
 .card {
-    background: var(--wit);
-    padding: 22px;
-    border-radius: 18px;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    background:var(--wit);
+    padding:22px;
+    border-radius:18px;
+    box-shadow:0 4px 18px rgba(0,0,0,.08);
 }
 
 h2 {
-    margin-top: 0;
-    color: var(--groen);
+    margin-top:0;
+    color:var(--groen);
 }
 
 label {
-    display: block;
-    margin-top: 13px;
-    margin-bottom: 5px;
-    font-weight: bold;
+    display:block;
+    margin-top:13px;
+    margin-bottom:5px;
+    font-weight:bold;
 }
 
-input,
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #cccccc;
-    border-radius: 10px;
-    font-size: 16px;
-    font-family: inherit;
+input, textarea {
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+    font-family:inherit;
+}
+
+button {
+    cursor:pointer;
 }
 
 .primary {
-    background: var(--groen);
-    color: white;
-    border: none;
-    padding: 12px 17px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    margin-top: 14px;
+    background:var(--groen);
+    color:white;
+    border:0;
+    padding:12px 17px;
+    border-radius:10px;
+    font-weight:bold;
+    margin-top:14px;
 }
 
 .primary:hover {
-    background: #316846;
+    background:#316846;
+}
+
+.nowButton {
+    background:var(--accent);
+    color:white;
+    border:0;
+    padding:12px 14px;
+    border-radius:10px;
+    font-weight:bold;
+    margin-top:5px;
+    white-space:nowrap;
+}
+
+.timeRow {
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:8px;
+    align-items:end;
 }
 
 .danger {
-    background: var(--rood);
-    color: white;
-    border: none;
-    padding: 7px 10px;
-    border-radius: 8px;
-    cursor: pointer;
+    background:var(--rood);
+    color:white;
+    border:0;
+    padding:7px 10px;
+    border-radius:8px;
 }
 
 .stat {
-    text-align: center;
+    text-align:center;
 }
 
 .stat b {
-    display: block;
-    font-size: 38px;
-    color: var(--groen);
-    margin-bottom: 5px;
+    display:block;
+    font-size:38px;
+    color:var(--groen);
+    margin-bottom:5px;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
+    width:100%;
+    border-collapse:collapse;
 }
 
-th,
-td {
-    text-align: left;
-    padding: 12px;
-    border-bottom: 1px solid #dddddd;
+th,td {
+    text-align:left;
+    padding:12px;
+    border-bottom:1px solid #ddd;
 }
 
 th {
-    color: var(--groen);
+    color:var(--groen);
 }
 
 .rank {
-    font-size: 25px;
-    width: 60px;
+    font-size:25px;
+    width:60px;
 }
 
 .task {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 0;
-    border-bottom: 1px solid #dddddd;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 0;
+    border-bottom:1px solid #ddd;
 }
 
 .task input {
-    width: auto;
+    width:auto;
 }
 
 .task-text {
-    flex: 1;
+    flex:1;
 }
 
 .done {
-    text-decoration: line-through;
-    color: #888888;
+    text-decoration:line-through;
+    color:#888;
 }
 
 .chat {
-    height: 400px;
-    overflow-y: auto;
-    background: #efede6;
-    border-radius: 12px;
-    padding: 12px;
-    margin-bottom: 12px;
+    height:400px;
+    overflow-y:auto;
+    background:#efede6;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:12px;
 }
 
 .message {
-    background: white;
-    padding: 10px 13px;
-    border-radius: 12px;
-    margin: 8px 0;
-    max-width: 85%;
+    background:white;
+    padding:10px 13px;
+    border-radius:12px;
+    margin:8px 0;
+    max-width:85%;
 }
 
 .message-name {
-    font-weight: bold;
-    color: var(--groen);
+    font-weight:bold;
+    color:var(--groen);
 }
 
 .message-time {
-    color: #777;
-    font-size: 12px;
+    color:#777;
+    font-size:12px;
 }
 
 .small {
-    color: #687268;
-    font-size: 13px;
+    color:#687268;
+    font-size:13px;
+}
+
+.error {
+    color:var(--rood);
+    font-weight:bold;
 }
 
 .success {
-    color: #258442;
-    font-weight: bold;
+    color:#258442;
+    font-weight:bold;
+}
+
+#userInfo {
+    text-align:center;
+    padding:10px;
+    background:#e5eadf;
 }
 
 footer {
-    text-align: center;
-    padding: 40px 20px;
-    color: #687268;
+    text-align:center;
+    padding:40px 20px;
+    color:#687268;
 }
 
-@media (max-width: 600px) {
-    header h1 {
-        font-size: 35px;
-    }
+@media(max-width:600px) {
+    header h1 { font-size:35px; }
 
     nav {
-        justify-content: flex-start;
-        overflow-x: auto;
+        justify-content:flex-start;
+        overflow-x:auto;
     }
 
     nav button {
-        flex-shrink: 0;
+        flex-shrink:0;
     }
 
     .card {
-        padding: 17px;
+        padding:17px;
     }
 
-    th,
-    td {
-        padding: 8px;
+    .timeRow {
+        grid-template-columns:1fr;
+    }
+
+    .nowButton {
+        width:100%;
     }
 }
 </style>
@@ -386,1224 +290,786 @@ footer {
 
 <body>
 
-<!-- ========================= -->
-<!-- LOGIN -->
-<!-- ========================= -->
-
-<div id="authScreen">
-
-    <div class="auth-card">
-
-        <div class="auth-logo">🏕️</div>
-
-        <h1>De Hut</h1>
-
-        <div class="subtitle">
-            Inloggen bij de Hut
-        </div>
-
-        <div class="auth-tabs">
-
-            <button
-                id="loginTab"
-                class="active"
-                onclick="showAuth('login')">
-                Inloggen
-            </button>
-
-            <button
-                id="registerTab"
-                onclick="showAuth('register')">
-                Registreren
-            </button>
-
-        </div>
-
-
-        <!-- LOGIN -->
-
-        <div id="loginForm">
-
-            <label>E-mail</label>
-
-            <input
-                id="loginEmail"
-                type="email"
-                placeholder="jouw@email.nl"
-            >
-
-            <label>Wachtwoord</label>
-
-            <input
-                id="loginPassword"
-                type="password"
-                placeholder="Wachtwoord"
-            >
-
-            <button
-                class="primary"
-                style="width:100%"
-                onclick="login()">
-                🔐 Inloggen
-            </button>
-
-        </div>
-
-
-        <!-- REGISTER -->
-
-        <div id="registerForm" style="display:none">
-
-            <label>Naam</label>
-
-            <input
-                id="registerName"
-                placeholder="Bijv. Lucas"
-            >
-
-            <label>E-mail</label>
-
-            <input
-                id="registerEmail"
-                type="email"
-                placeholder="jouw@email.nl"
-            >
-
-            <label>Wachtwoord</label>
-
-            <input
-                id="registerPassword"
-                type="password"
-                placeholder="Minimaal 6 tekens"
-            >
-
-            <button
-                class="primary"
-                style="width:100%"
-                onclick="register()">
-                👤 Account maken
-            </button>
-
-        </div>
-
-
-        <div id="authMessage" class="auth-message"></div>
-
-    </div>
-
-</div>
-
-
-<!-- ========================= -->
-<!-- APP -->
-<!-- ========================= -->
-
-<div id="app" style="display:none">
-
 <header>
-
     <h1>🏕️ De Hut</h1>
-
-    <p>
-        Uren • Leaderboard • To-do • Chat
-    </p>
-
+    <p>Uren • Leaderboard • To-do • Chat</p>
 </header>
 
-
-<div class="account-bar">
-
-    <span>
-        👋 Welkom,
-        <strong id="currentUserName">...</strong>
-    </span>
-
-    <button
-        class="logout"
-        onclick="logout()">
+<div id="userInfo">
+    <span id="loginStatus">Niet ingelogd</span>
+    <button id="logoutButton"
+            class="danger"
+            style="display:none;margin-left:10px"
+            onclick="logout()">
         Uitloggen
     </button>
-
 </div>
 
+<nav id="mainNav" style="display:none">
 
-<nav>
-
-    <button
-        class="active"
-        onclick="showSection('home', this)">
+    <button class="active" onclick="showSection('home',this)">
         🏠 Home
     </button>
 
-    <button
-        onclick="showSection('uren', this)">
+    <button onclick="showSection('uren',this)">
         ⏱️ Uren
     </button>
 
-    <button
-        onclick="showSection('leaderboard', this)">
+    <button onclick="showSection('leaderboard',this)">
         🏆 Leaderboard
     </button>
 
-    <button
-        onclick="showSection('todo', this)">
+    <button onclick="showSection('todo',this)">
         ✅ To-do
     </button>
 
-    <button
-        onclick="showSection('chat', this)">
+    <button onclick="showSection('chat',this)">
         💬 Chat
     </button>
 
 </nav>
 
-
 <main>
 
-<section id="home" class="section active">
+<!-- LOGIN -->
 
-    <div class="grid">
+<section id="auth" class="section active">
 
-        <div class="card stat">
+<div class="grid">
 
-            <b id="totalHours">0u</b>
+<div class="card">
 
-            geregistreerde hut-uren
+<h2>🔐 Inloggen</h2>
 
-        </div>
+<label>E-mailadres</label>
+<input id="loginEmail" type="email">
 
+<label>Wachtwoord</label>
+<input id="loginPassword" type="password">
 
-        <div class="card stat">
+<button class="primary" onclick="login()">
+    Inloggen
+</button>
 
-            <b id="peopleCount">0</b>
+<p id="loginMessage" class="small"></p>
 
-            gebruikers
-
-        </div>
-
-
-        <div class="card stat">
-
-            <b id="todoCount">0</b>
-
-            openstaande taken
-
-        </div>
-
-    </div>
+</div>
 
 
-    <br>
+<div class="card">
 
+<h2>👤 Account maken</h2>
 
-    <div class="card">
+<label>Naam</label>
+<input id="registerName" placeholder="Bijv. Bram">
 
-        <h2>🏕️ Welkom bij De Hut</h2>
+<label>E-mailadres</label>
+<input id="registerEmail" type="email">
 
-        <p>
-            Houd hier bij wanneer je bij de hut bent geweest,
-            hoeveel uur je er hebt doorgebracht en wie de meeste
-            hut-uren heeft.
-        </p>
+<label>Wachtwoord</label>
+<input id="registerPassword" type="password">
 
-        <p>
-            Je bent ingelogd als
-            <strong id="homeUserName"></strong>.
-        </p>
+<button class="primary" onclick="register()">
+    Account maken
+</button>
 
-    </div>
+<p id="registerMessage" class="small"></p>
+
+</div>
+
+</div>
 
 </section>
 
+
+<!-- HOME -->
+
+<section id="home" class="section">
+
+<div class="grid">
+
+<div class="card stat">
+<b id="totalHours">0u</b>
+geregistreerde hut-uren
+</div>
+
+<div class="card stat">
+<b id="peopleCount">0</b>
+gebruikers
+</div>
+
+<div class="card stat">
+<b id="todoCount">0</b>
+openstaande taken
+</div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h2>🏕️ Welkom bij De Hut</h2>
+
+<p>
+Welkom bij de online Hut-website!
+Hier kun je je hut-uren registreren,
+taken bekijken en met elkaar chatten.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- UREN -->
 
 <section id="uren" class="section">
 
-    <div class="grid">
+<div class="grid">
 
-        <div class="card">
+<div class="card">
 
-            <h2>⏱️ Uren registreren</h2>
+<h2>⏱️ Uren registreren</h2>
 
-            <p class="small">
-                Je naam wordt automatisch ingevuld.
-            </p>
+<label>Naam</label>
+<input id="name" readonly>
 
-            <label>Datum</label>
+<label>Datum</label>
+<input id="date" type="date">
 
-            <input id="date" type="date">
+<label>Aankomst</label>
 
-            <label>Aankomst</label>
+<div class="timeRow">
 
-            <input id="start" type="time">
+<input id="start" type="time">
 
-            <label>Vertrek</label>
+<button class="nowButton" onclick="setNow('start')">
+📍 NU
+</button>
 
-            <input id="end" type="time">
+</div>
 
-            <button
-                class="primary"
-                onclick="addVisit()">
-                💾 Uren opslaan
-            </button>
+<label>Vertrek</label>
 
-            <p
-                id="visitResult"
-                class="small">
-            </p>
+<div class="timeRow">
 
-        </div>
+<input id="end" type="time">
+
+<button class="nowButton" onclick="setNow('end')">
+🏁 NU
+</button>
+
+</div>
+
+<button class="primary" onclick="addVisit()">
+💾 Uren opslaan
+</button>
+
+<p id="visitResult" class="small"></p>
+
+</div>
 
 
-        <div class="card">
+<div class="card">
 
-            <h2>📋 Mijn registraties</h2>
+<h2>📋 Mijn registraties</h2>
 
-            <div id="visits"></div>
+<div id="visits"></div>
 
-        </div>
+</div>
 
-    </div>
+</div>
 
 </section>
 
+
+<!-- LEADERBOARD -->
 
 <section id="leaderboard" class="section">
 
-    <div class="card">
+<div class="card">
 
-        <h2>🏆 Hut Leaderboard</h2>
+<h2>🏆 Hut Leaderboard</h2>
 
-        <p class="small">
-            Wie heeft de meeste uren bij de hut?
-        </p>
+<p class="small">
+Wie heeft de meeste uren bij de hut?
+</p>
 
-        <table>
+<table>
 
-            <thead>
+<thead>
+<tr>
+<th>#</th>
+<th>Naam</th>
+<th>Uren</th>
+</tr>
+</thead>
 
-                <tr>
+<tbody id="leaderboardBody"></tbody>
 
-                    <th>#</th>
+</table>
 
-                    <th>Naam</th>
-
-                    <th>Uren</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody id="leaderboardBody">
-
-            </tbody>
-
-        </table>
-
-    </div>
+</div>
 
 </section>
 
+
+<!-- TODO -->
 
 <section id="todo" class="section">
 
-    <div class="grid">
+<div class="grid">
 
-        <div class="card">
+<div class="card">
 
-            <h2>➕ Nieuwe taak</h2>
+<h2>➕ Nieuwe taak</h2>
 
-            <input
-                id="taskInput"
-                placeholder="Bijv. hout halen">
+<input id="taskInput"
+       placeholder="Bijv. hout halen">
 
-            <button
-                class="primary"
-                onclick="addTask()">
-                ➕ Taak toevoegen
-            </button>
+<button class="primary" onclick="addTask()">
+➕ Taak toevoegen
+</button>
 
-        </div>
+</div>
 
 
-        <div class="card">
+<div class="card">
 
-            <h2>✅ To-do lijst</h2>
+<h2>✅ To-do lijst</h2>
 
-            <div id="tasks"></div>
+<div id="tasks"></div>
 
-        </div>
+</div>
 
-    </div>
+</div>
 
 </section>
 
 
+<!-- CHAT -->
+
 <section id="chat" class="section">
 
-    <div class="card">
+<div class="card">
 
-        <h2>💬 Hut-chat</h2>
+<h2>💬 Hut-chat</h2>
 
-        <div
-            id="messages"
-            class="chat">
-        </div>
+<div id="messages" class="chat"></div>
 
-        <label>Bericht</label>
+<input id="chatText"
+       placeholder="Typ een bericht..."
+       onkeydown="if(event.key==='Enter')sendMessage()">
 
-        <input
-            id="chatText"
-            placeholder="Typ een bericht..."
-            onkeydown="
-                if(event.key === 'Enter') sendMessage()
-            ">
+<button class="primary" onclick="sendMessage()">
+💬 Versturen
+</button>
 
-        <button
-            class="primary"
-            onclick="sendMessage()">
-            💬 Versturen
-        </button>
-
-    </div>
+</div>
 
 </section>
 
 </main>
 
-
 <footer>
-
-    🏕️ De Hut
-
-    <br>
-
-    <span class="small">
-        Samen maken we de hut beter.
-    </span>
-
+🏕️ De Hut
+<br>
+<span class="small">Samen maken we de hut beter.</span>
 </footer>
 
-</div>
 
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <script>
 
-/* ========================================= */
-/* SUPABASE */
-/* ========================================= */
-
 const SUPABASE_URL =
-    "https://xmotmmbwcehbtjwgzbor.supabase.co";
+"https://xmotmmbwcehbtjwgzbor.supabase.co";
 
 const SUPABASE_KEY =
-    "sb_publishable_Rf-lqHRdExR_PeoKaD25Xw_qaWeHH0Y";
+"sb_publishable_Rf-lqHRdExR_PeoKaD25Xw_qaWeHH0Y";
 
 const supabaseClient =
-    window.supabase.createClient(
-        SUPABASE_URL,
-        SUPABASE_KEY
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* ============================= */
+/* HULPFUNCTIES */
+/* ============================= */
+
+function escapeHTML(text) {
+
+    return String(text).replace(
+        /[&<>"']/g,
+        character => ({
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#039;"
+        }[character])
     );
 
-
-/* ========================================= */
-/* GEBRUIKER */
-/* ========================================= */
-
-let currentUser = null;
-let currentProfile = null;
-
-
-/* ========================================= */
-/* AUTH SCHERM */
-/* ========================================= */
-
-function showAuth(type) {
-
-    const login =
-        document.getElementById("loginForm");
-
-    const register =
-        document.getElementById("registerForm");
-
-    const loginTab =
-        document.getElementById("loginTab");
-
-    const registerTab =
-        document.getElementById("registerTab");
-
-    if (type === "login") {
-
-        login.style.display = "block";
-        register.style.display = "none";
-
-        loginTab.classList.add("active");
-        registerTab.classList.remove("active");
-
-    } else {
-
-        login.style.display = "none";
-        register.style.display = "block";
-
-        loginTab.classList.remove("active");
-        registerTab.classList.add("active");
-
-    }
-
-    clearAuthMessage();
 }
 
 
-/* ========================================= */
-/* MELDING */
-/* ========================================= */
+function setNow(field) {
 
-function showAuthMessage(text, type) {
+    const now = new Date();
 
-    const box =
-        document.getElementById("authMessage");
+    const hours =
+        String(now.getHours()).padStart(2,"0");
 
-    box.textContent = text;
+    const minutes =
+        String(now.getMinutes()).padStart(2,"0");
 
-    box.className =
-        "auth-message " + type;
+    document.getElementById(field).value =
+        `${hours}:${minutes}`;
 
 }
 
 
-function clearAuthMessage() {
+function showSection(id,button) {
 
-    const box =
-        document.getElementById("authMessage");
+    document.querySelectorAll(".section")
+        .forEach(s => s.classList.remove("active"));
 
-    box.textContent = "";
+    document.getElementById(id)
+        .classList.add("active");
 
-    box.className =
-        "auth-message";
+    document.querySelectorAll("nav button")
+        .forEach(b => b.classList.remove("active"));
+
+    button.classList.add("active");
+
+    renderAll();
 
 }
 
 
-/* ========================================= */
+/* ============================= */
 /* REGISTREREN */
-/* ========================================= */
+/* ============================= */
 
 async function register() {
 
     const name =
-        document
-            .getElementById("registerName")
-            .value
-            .trim();
+        document.getElementById("registerName").value.trim();
 
     const email =
-        document
-            .getElementById("registerEmail")
-            .value
-            .trim();
+        document.getElementById("registerEmail").value.trim();
 
     const password =
-        document
-            .getElementById("registerPassword")
-            .value;
+        document.getElementById("registerPassword").value;
 
+    const message =
+        document.getElementById("registerMessage");
 
     if (!name || !email || !password) {
 
-        showAuthMessage(
-            "Vul alles in.",
-            "error"
-        );
+        message.textContent =
+            "Vul alles in.";
 
         return;
+
     }
 
-
-    if (password.length < 6) {
-
-        showAuthMessage(
-            "Je wachtwoord moet minimaal 6 tekens hebben.",
-            "error"
-        );
-
-        return;
-    }
-
-
-    showAuthMessage(
-        "Account wordt aangemaakt...",
-        "success"
-    );
-
-
-    const {
-        data,
-        error
-    } =
+    const { data, error } =
         await supabaseClient.auth.signUp({
 
-            email: email,
+            email:email,
+            password:password,
 
-            password: password,
-
-            options: {
-
-                data: {
-
-                    username: name
-
+            options:{
+                data:{
+                    name:name
                 }
-
             }
 
         });
 
-
     if (error) {
 
-        showAuthMessage(
-            error.message,
-            "error"
-        );
+        message.textContent =
+            error.message;
+
+        message.className = "error";
 
         return;
 
     }
 
+    message.textContent =
+        "✅ Account aangemaakt!";
 
-    /*
-       Als e-mailbevestiging uitstaat,
-       wordt de gebruiker automatisch
-       ingelogd.
-    */
-
-    if (data.session) {
-
-        await loadUser();
-
-    } else {
-
-        showAuthMessage(
-            "Account gemaakt! Controleer je e-mail om je account te bevestigen en log daarna in.",
-            "success"
-        );
-
-        showAuth("login");
-
-    }
+    message.className = "success";
 
 }
 
 
-/* ========================================= */
+/* ============================= */
 /* INLOGGEN */
-/* ========================================= */
+/* ============================= */
 
 async function login() {
 
     const email =
-        document
-            .getElementById("loginEmail")
-            .value
-            .trim();
+        document.getElementById("loginEmail").value.trim();
 
     const password =
-        document
-            .getElementById("loginPassword")
-            .value;
+        document.getElementById("loginPassword").value;
 
+    const message =
+        document.getElementById("loginMessage");
 
-    if (!email || !password) {
-
-        showAuthMessage(
-            "Vul je e-mail en wachtwoord in.",
-            "error"
-        );
-
-        return;
-
-    }
-
-
-    showAuthMessage(
-        "Inloggen...",
-        "success"
-    );
-
-
-    const {
-        data,
-        error
-    } =
+    const { error } =
         await supabaseClient.auth.signInWithPassword({
 
-            email: email,
-
-            password: password
+            email:email,
+            password:password
 
         });
 
-
     if (error) {
 
-        showAuthMessage(
-            "Inloggen mislukt: " +
-            error.message,
-            "error"
-        );
+        message.textContent =
+            "Inloggen mislukt: " + error.message;
+
+        message.className = "error";
 
         return;
 
     }
 
-
-    currentUser =
-        data.user;
-
-
-    await loadUser();
+    message.textContent =
+        "✅ Ingelogd!";
 
 }
 
 
-/* ========================================= */
-/* GEBRUIKER LADEN */
-/* ========================================= */
-
-async function loadUser() {
-
-    const {
-        data
-    } =
-        await supabaseClient.auth.getUser();
-
-
-    if (!data.user) {
-
-        return;
-
-    }
-
-
-    currentUser =
-        data.user;
-
-
-    let username =
-        currentUser
-            .user_metadata
-            ?.username;
-
-
-    /*
-       Probeer bestaand profiel
-       te vinden.
-    */
-
-    const {
-        data: profile
-    } =
-        await supabaseClient
-            .from("profiles")
-            .select("*")
-            .eq("id", currentUser.id)
-            .maybeSingle();
-
-
-    if (profile) {
-
-        currentProfile =
-            profile;
-
-        username =
-            profile.username;
-
-    } else {
-
-        /*
-           Profiel bestaat nog niet.
-           We maken het aan.
-        */
-
-        if (!username) {
-
-            username =
-                currentUser.email
-                    .split("@")[0];
-
-        }
-
-
-        const {
-            data: newProfile,
-            error
-        } =
-            await supabaseClient
-                .from("profiles")
-                .insert({
-
-                    id: currentUser.id,
-
-                    username: username
-
-                })
-                .select()
-                .single();
-
-
-        if (!error) {
-
-            currentProfile =
-                newProfile;
-
-        }
-
-    }
-
-
-    document
-        .getElementById("currentUserName")
-        .textContent =
-        username;
-
-
-    document
-        .getElementById("homeUserName")
-        .textContent =
-        username;
-
-
-    document
-        .getElementById("authScreen")
-        .style.display =
-        "none";
-
-
-    document
-        .getElementById("app")
-        .style.display =
-        "block";
-
-
-    document
-        .getElementById("date")
-        .value =
-        new Date()
-            .toISOString()
-            .slice(0, 10);
-
-
-    loadLocalData();
-
-}
-
-
-/* ========================================= */
+/* ============================= */
 /* UITLOGGEN */
-/* ========================================= */
+/* ============================= */
 
 async function logout() {
 
     await supabaseClient.auth.signOut();
 
-    currentUser = null;
-    currentProfile = null;
-
-    document
-        .getElementById("app")
-        .style.display =
-        "none";
-
-    document
-        .getElementById("authScreen")
-        .style.display =
-        "flex";
+    location.reload();
 
 }
 
 
-/* ========================================= */
-/* LOKALE DATA */
-/* ========================================= */
+/* ============================= */
+/* GEBRUIKER */
+/* ============================= */
 
-let visits = [];
-let tasks = [];
-let messages = [];
+async function getUser() {
 
+    const {
+        data:{
+            user
+        }
+    } = await supabaseClient.auth.getUser();
 
-function getData(key, fallback) {
-
-    const data =
-        localStorage.getItem(key);
-
-    if (!data) {
-
-        return fallback;
-
-    }
-
-    return JSON.parse(data);
+    return user;
 
 }
 
 
-function saveData(key, data) {
+async function setupUser() {
 
-    localStorage.setItem(
-        key,
-        JSON.stringify(data)
-    );
+    const user = await getUser();
 
-}
+    if (!user) {
 
+        document.getElementById("auth")
+            .classList.add("active");
 
-function loadLocalData() {
+        document.getElementById("mainNav")
+            .style.display = "none";
 
-    visits =
-        getData("hut_visits_" + currentUser.id, []);
+        document.getElementById("logoutButton")
+            .style.display = "none";
 
-    tasks =
-        getData("hut_tasks", []);
-
-    messages =
-        getData("hut_messages", []);
-
-    render();
-
-}
-
-
-/* ========================================= */
-/* NAVIGATIE */
-/* ========================================= */
-
-function showSection(sectionId, button) {
-
-    document
-        .querySelectorAll(".section")
-        .forEach(section => {
-
-            section.classList.remove("active");
-
-        });
-
-
-    document
-        .getElementById(sectionId)
-        .classList.add("active");
-
-
-    document
-        .querySelectorAll("nav button")
-        .forEach(btn => {
-
-            btn.classList.remove("active");
-
-        });
-
-
-    button.classList.add("active");
-
-    render();
-
-}
-
-
-/* ========================================= */
-/* UREN */
-/* ========================================= */
-
-function addVisit() {
-
-    const date =
-        document
-            .getElementById("date")
-            .value;
-
-    const start =
-        document
-            .getElementById("start")
-            .value;
-
-    const end =
-        document
-            .getElementById("end")
-            .value;
-
-
-    if (!date || !start || !end) {
-
-        alert("Vul alle velden in.");
+        document.getElementById("loginStatus")
+            .textContent = "Niet ingelogd";
 
         return;
 
     }
 
+    const name =
+        user.user_metadata?.name ||
+        user.email.split("@")[0];
+
+    document.getElementById("name").value =
+        name;
+
+    document.getElementById("loginStatus").innerHTML =
+        "👋 Ingelogd als <b>" +
+        escapeHTML(name) +
+        "</b>";
+
+    document.getElementById("logoutButton")
+        .style.display = "inline-block";
+
+    document.getElementById("mainNav")
+        .style.display = "flex";
+
+    document.getElementById("auth")
+        .classList.remove("active");
+
+    await renderAll();
+
+}
+
+
+/* ============================= */
+/* UREN OPSLAAN */
+/* ============================= */
+
+async function addVisit() {
+
+    const user = await getUser();
+
+    if (!user) return;
+
+    const name =
+        document.getElementById("name").value;
+
+    const date =
+        document.getElementById("date").value;
+
+    const start =
+        document.getElementById("start").value;
+
+    const end =
+        document.getElementById("end").value;
+
+    if (!date || !start || !end) {
+
+        alert("Vul datum, aankomst en vertrek in.");
+
+        return;
+
+    }
 
     let startTime =
-        new Date(
-            "2000-01-01T" + start
-        );
-
+        new Date("2000-01-01T" + start);
 
     let endTime =
-        new Date(
-            "2000-01-01T" + end
-        );
-
+        new Date("2000-01-01T" + end);
 
     if (endTime <= startTime) {
 
         endTime.setDate(
-            endTime.getDate() + 1
+            endTime.getDate()+1
         );
 
     }
 
-
     const hours =
-        (endTime - startTime) /
-        3600000;
+        (endTime-startTime)/3600000;
 
+    const { error } =
+        await supabaseClient
+        .from("visits")
+        .insert({
 
-    visits.push({
+            user_id:user.id,
+            name:name,
+            date:date,
+            start:start,
+            end:end,
+            hours:hours
 
-        id: Date.now(),
+        });
 
-        userId: currentUser.id,
+    if (error) {
 
-        name: currentProfile?.username
-            || currentUser.user_metadata?.username
-            || currentUser.email,
+        alert(error.message);
 
-        date: date,
+        return;
 
-        start: start,
+    }
 
-        end: end,
-
-        hours: hours
-
-    });
-
-
-    saveData(
-        "hut_visits_" + currentUser.id,
-        visits
-    );
-
-
-    document
-        .getElementById("visitResult")
+    document.getElementById("visitResult")
         .textContent =
         "✅ Opgeslagen: " +
         hours.toFixed(2) +
         " uur";
 
-
-    render();
+    await renderAll();
 
 }
 
 
-/* ========================================= */
+/* ============================= */
 /* TAKEN */
-/* ========================================= */
+/* ============================= */
 
-function addTask() {
+async function addTask() {
+
+    const user = await getUser();
+
+    if (!user) return;
 
     const input =
-        document.getElementById(
-            "taskInput"
-        );
-
+        document.getElementById("taskInput");
 
     const text =
         input.value.trim();
 
+    if (!text) return;
 
-    if (!text) {
+    const { error } =
+        await supabaseClient
+        .from("tasks")
+        .insert({
 
-        return;
-
-    }
-
-
-    tasks.push({
-
-        id: Date.now(),
-
-        text: text,
-
-        done: false
-
-    });
-
-
-    saveData(
-        "hut_tasks",
-        tasks
-    );
-
-
-    input.value = "";
-
-    render();
-
-}
-
-
-function toggleTask(id) {
-
-    tasks =
-        tasks.map(task => {
-
-            if (task.id === id) {
-
-                return {
-
-                    ...task,
-
-                    done: !task.done
-
-                };
-
-            }
-
-            return task;
+            text:text,
+            done:false,
+            user_id:user.id
 
         });
 
+    if (error) {
 
-    saveData(
-        "hut_tasks",
-        tasks
-    );
-
-
-    render();
-
-}
-
-
-function deleteTask(id) {
-
-    tasks =
-        tasks.filter(
-            task => task.id !== id
-        );
-
-
-    saveData(
-        "hut_tasks",
-        tasks
-    );
-
-
-    render();
-
-}
-
-
-/* ========================================= */
-/* CHAT */
-/* ========================================= */
-
-function sendMessage() {
-
-    const text =
-        document
-            .getElementById("chatText")
-            .value
-            .trim();
-
-
-    if (!text) {
+        alert(error.message);
 
         return;
 
     }
 
+    input.value = "";
 
-    const now =
-        new Date();
+    await renderAll();
 
-
-    messages.push({
-
-        id: Date.now(),
-
-        name:
-            currentProfile?.username
-            || currentUser.email,
-
-        text: text,
-
-        time:
-            now.toLocaleString(
-                "nl-NL",
-                {
-                    hour: "2-digit",
-                    minute: "2-digit"
-                }
-            )
-
-    });
+}
 
 
-    saveData(
-        "hut_messages",
-        messages
-    );
+async function toggleTask(id,done) {
+
+    const { error } =
+        await supabaseClient
+        .from("tasks")
+        .update({
+            done:!done
+        })
+        .eq("id",id);
+
+    if (error) {
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    await renderAll();
+
+}
 
 
-    document
-        .getElementById("chatText")
+async function deleteTask(id) {
+
+    const { error } =
+        await supabaseClient
+        .from("tasks")
+        .delete()
+        .eq("id",id);
+
+    if (error) {
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    await renderAll();
+
+}
+
+
+/* ============================= */
+/* CHAT */
+/* ============================= */
+
+async function sendMessage() {
+
+    const user = await getUser();
+
+    if (!user) return;
+
+    const text =
+        document.getElementById("chatText")
+        .value.trim();
+
+    if (!text) return;
+
+    const name =
+        user.user_metadata?.name ||
+        user.email.split("@")[0];
+
+    const { error } =
+        await supabaseClient
+        .from("messages")
+        .insert({
+
+            user_id:user.id,
+            name:name,
+            text:text
+
+        });
+
+    if (error) {
+
+        alert(error.message);
+
+        return;
+
+    }
+
+    document.getElementById("chatText")
         .value = "";
 
-
-    render();
-
-}
-
-
-/* ========================================= */
-/* HTML VEILIG MAKEN */
-/* ========================================= */
-
-function escapeHTML(text) {
-
-    return text.replace(
-        /[&<>"']/g,
-
-        function(character) {
-
-            const replacements = {
-
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#039;"
-
-            };
-
-            return replacements[
-                character
-            ];
-
-        }
-    );
+    await renderAll();
 
 }
 
 
-/* ========================================= */
-/* RENDER */
-/* ========================================= */
+/* ============================= */
+/* ALLES LADEN */
+/* ============================= */
 
-function render() {
+async function renderAll() {
 
-    if (!currentUser) {
+    const user = await getUser();
+
+    if (!user) return;
+
+
+    /* UREN */
+
+    const {
+        data:visits,
+        error:visitError
+    } =
+        await supabaseClient
+        .from("visits")
+        .select("*")
+        .order("date",{ascending:false});
+
+    if (visitError) {
+
+        console.error(visitError);
 
         return;
 
@@ -1612,310 +1078,217 @@ function render() {
 
     const totals = {};
 
+    visits.forEach(v => {
 
-    visits.forEach(visit => {
-
-        if (!totals[visit.name]) {
-
-            totals[visit.name] = 0;
-
-        }
-
-        totals[visit.name] +=
-            visit.hours;
+        totals[v.name] =
+            (totals[v.name] || 0) +
+            Number(v.hours);
 
     });
 
 
     const names =
         Object.keys(totals)
-            .sort(
-                (a, b) =>
-                    totals[b] -
-                    totals[a]
-            );
-
-
-    const board =
-        document.getElementById(
-            "leaderboardBody"
+        .sort((a,b) =>
+            totals[b]-totals[a]
         );
 
 
-    if (names.length === 0) {
+    document.getElementById("leaderboardBody")
+        .innerHTML =
+        names.length
+        ? names.map((name,i) => {
 
-        board.innerHTML = `
+            let medal =
+                i===0 ? "🥇" :
+                i===1 ? "🥈" :
+                i===2 ? "🥉" :
+                i+1;
+
+            return `
             <tr>
-                <td colspan="3">
-                    Nog geen uren geregistreerd.
-                </td>
-            </tr>
-        `;
+                <td class="rank">${medal}</td>
+                <td>${escapeHTML(name)}</td>
+                <td>${totals[name].toFixed(1)} uur</td>
+            </tr>`;
 
-    } else {
-
-        board.innerHTML =
-            names.map(
-                (name, index) => {
-
-                    let medal;
-
-                    if (index === 0)
-                        medal = "🥇";
-                    else if (index === 1)
-                        medal = "🥈";
-                    else if (index === 2)
-                        medal = "🥉";
-                    else
-                        medal = index + 1;
-
-
-                    return `
-                        <tr>
-
-                            <td class="rank">
-                                ${medal}
-                            </td>
-
-                            <td>
-                                ${escapeHTML(name)}
-                            </td>
-
-                            <td>
-                                ${totals[name].toFixed(1)}
-                                uur
-                            </td>
-
-                        </tr>
-                    `;
-
-                }
-            ).join("");
-
-    }
+        }).join("")
+        :
+        `<tr>
+            <td colspan="3">
+                Nog geen uren.
+            </td>
+        </tr>`;
 
 
     const total =
         visits.reduce(
-            (sum, visit) =>
-                sum + visit.hours,
+            (sum,v) => sum+Number(v.hours),
             0
         );
 
-
-    document
-        .getElementById("totalHours")
+    document.getElementById("totalHours")
         .textContent =
-        total.toFixed(1) + "u";
+        total.toFixed(1)+"u";
 
-
-    document
-        .getElementById("peopleCount")
+    document.getElementById("peopleCount")
         .textContent =
         names.length;
 
 
-    document
-        .getElementById("todoCount")
-        .textContent =
-        tasks.filter(
-            task => !task.done
-        ).length;
+    document.getElementById("visits")
+        .innerHTML =
+        visits.length
+        ? visits.map(v => `
+            <div class="small">
+                <b>${escapeHTML(v.name)}</b><br>
+                ${v.date}<br>
+                ${v.start} – ${v.end}
+                = ${Number(v.hours).toFixed(2)} uur
+            </div>
+            <hr>
+        `).join("")
+        : "Nog geen registraties.";
 
 
-    const visitContainer =
-        document.getElementById(
-            "visits"
-        );
+    /* TAKEN */
 
+    const {
+        data:tasks,
+        error:taskError
+    } =
+        await supabaseClient
+        .from("tasks")
+        .select("*")
+        .order("created_at",{ascending:true});
 
-    if (visits.length === 0) {
+    if (taskError) {
 
-        visitContainer.innerHTML =
-            "Nog geen registraties.";
+        console.error(taskError);
 
-    } else {
-
-        visitContainer.innerHTML =
-            visits
-                .slice()
-                .reverse()
-                .map(
-                    visit => `
-
-                    <div class="small">
-
-                        <b>
-                            ${escapeHTML(
-                                visit.name
-                            )}
-                        </b>
-
-                        <br>
-
-                        ${visit.date}
-
-                        <br>
-
-                        ${visit.start}
-                        –
-                        ${visit.end}
-
-                        =
-                        ${visit.hours.toFixed(2)}
-                        uur
-
-                    </div>
-
-                    <hr>
-                `
-                )
-                .join("");
+        return;
 
     }
 
 
-    const taskContainer =
-        document.getElementById(
-            "tasks"
-        );
+    document.getElementById("todoCount")
+        .textContent =
+        tasks.filter(t => !t.done).length;
 
 
-    if (tasks.length === 0) {
+    document.getElementById("tasks")
+        .innerHTML =
+        tasks.length
+        ? tasks.map(t => `
+            <div class="task">
 
-        taskContainer.innerHTML =
-            "🎉 Geen taken!";
+                <input
+                    type="checkbox"
+                    ${t.done ? "checked" : ""}
+                    onchange="toggleTask('${t.id}',${t.done})"
+                >
 
-    } else {
+                <span class="task-text ${t.done ? "done" : ""}">
+                    ${escapeHTML(t.text)}
+                </span>
 
-        taskContainer.innerHTML =
-            tasks
-                .map(
-                    task => `
+                <button
+                    class="danger"
+                    onclick="deleteTask('${t.id}')"
+                >
+                    ×
+                </button>
 
-                    <div class="task">
+            </div>
+        `).join("")
+        : "🎉 Geen taken!";
 
-                        <input
-                            type="checkbox"
-                            ${
-                                task.done
-                                    ? "checked"
-                                    : ""
-                            }
 
-                            onchange="
-                                toggleTask(
-                                    ${task.id}
-                                )
-                            "
-                        >
+    /* CHAT */
 
-                        <span
-                            class="task-text ${
-                                task.done
-                                    ? "done"
-                                    : ""
-                            }"
-                        >
-                            ${escapeHTML(
-                                task.text
-                            )}
-                        </span>
+    const {
+        data:messages,
+        error:messageError
+    } =
+        await supabaseClient
+        .from("messages")
+        .select("*")
+        .order("created_at",{ascending:true});
 
-                        <button
-                            class="danger"
-                            onclick="
-                                deleteTask(
-                                    ${task.id}
-                                )
-                            "
-                        >
-                            ×
-                        </button>
+    if (messageError) {
 
-                    </div>
-                `
-                )
-                .join("");
+        console.error(messageError);
+
+        return;
 
     }
 
 
     const chat =
-        document.getElementById(
-            "messages"
-        );
+        document.getElementById("messages");
 
+    chat.innerHTML =
+        messages.length
+        ? messages.map(m => {
 
-    if (messages.length === 0) {
+            const time =
+                new Date(m.created_at)
+                .toLocaleTimeString(
+                    "nl-NL",
+                    {
+                        hour:"2-digit",
+                        minute:"2-digit"
+                    }
+                );
 
-        chat.innerHTML =
-            "<p class='small'>Nog geen berichten.</p>";
+            return `
+            <div class="message">
+                <span class="message-name">
+                    ${escapeHTML(m.name)}
+                </span>
 
-    } else {
+                <span class="message-time">
+                    ${time}
+                </span>
 
-        chat.innerHTML =
-            messages
-                .map(
-                    message => `
+                <br>
 
-                    <div class="message">
+                ${escapeHTML(m.text)}
+            </div>`;
 
-                        <span class="message-name">
-                            ${escapeHTML(
-                                message.name
-                            )}
-                        </span>
+        }).join("")
+        : "<p class='small'>Nog geen berichten.</p>";
 
-                        <span class="message-time">
-                            ${message.time}
-                        </span>
-
-                        <br>
-
-                        ${escapeHTML(
-                            message.text
-                        )}
-
-                    </div>
-                `
-                )
-                .join("");
-
-        chat.scrollTop =
-            chat.scrollHeight;
-
-    }
+    chat.scrollTop =
+        chat.scrollHeight;
 
 }
 
 
-/* ========================================= */
-/* KIJK OF IEMAND AL INGELOGD IS */
-/* ========================================= */
+/* ============================= */
+/* DATUM */
+/* ============================= */
 
-async function checkSession() {
-
-    const {
-        data
-    } =
-        await supabaseClient.auth.getSession();
+document.getElementById("date").value =
+    new Date()
+    .toISOString()
+    .slice(0,10);
 
 
-    if (data.session) {
+/* ============================= */
+/* AUTH VERANDERING */
+/* ============================= */
 
-        await loadUser();
-
+supabaseClient.auth.onAuthStateChange(
+    async () => {
+        await setupUser();
     }
+);
 
-}
 
-
-/* ========================================= */
 /* START */
-/* ========================================= */
 
-checkSession();
+setupUser();
 
 </script>
 
