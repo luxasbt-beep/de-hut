@@ -6,6 +6,10 @@
 <title>De Hut 🏕️</title>
 
 <style>
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -25,6 +29,10 @@ header h1 {
     font-size: 42px;
 }
 
+header p {
+    margin: 8px 0 0;
+}
+
 nav {
     background: white;
     padding: 10px;
@@ -34,6 +42,8 @@ nav {
     flex-wrap: wrap;
     position: sticky;
     top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 8px #0002;
 }
 
 nav button {
@@ -93,7 +103,6 @@ input {
     border: 1px solid #ccc;
     border-radius: 10px;
     font-size: 16px;
-    box-sizing: border-box;
 }
 
 button {
@@ -142,7 +151,8 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+th,
+td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #ddd;
@@ -179,6 +189,7 @@ th {
     background: #efede6;
     padding: 12px;
     border-radius: 12px;
+    margin-bottom: 12px;
 }
 
 .message {
@@ -190,6 +201,10 @@ th {
 
 .message b {
     color: #234d35;
+}
+
+.message small {
+    color: #777;
 }
 
 .error {
@@ -208,7 +223,22 @@ th {
     text-align: center;
 }
 
+.danger {
+    background: #b74335;
+    color: white;
+    border: 0;
+    padding: 7px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.small {
+    color: #687268;
+    font-size: 13px;
+}
+
 @media(max-width:600px) {
+
     header h1 {
         font-size: 34px;
     }
@@ -238,7 +268,13 @@ th {
 
 <div id="userInfo">
     <span id="loginStatus">Niet ingelogd</span>
-    <button id="logout" class="primary" style="display:none" onclick="logout()">
+
+    <button
+        id="logout"
+        class="primary"
+        style="display:none"
+        onclick="logout()"
+    >
         Uitloggen
     </button>
 </div>
@@ -380,7 +416,7 @@ en met iedereen in de Hut-chat praten.
 
 <input id="start" type="time">
 
-<button class="now" onclick="now('start')">
+<button class="now" onclick="setNow('start')">
 📍 NU
 </button>
 
@@ -392,7 +428,7 @@ en met iedereen in de Hut-chat praten.
 
 <input id="end" type="time">
 
-<button class="now" onclick="now('end')">
+<button class="now" onclick="setNow('end')">
 🏁 NU
 </button>
 
@@ -408,7 +444,7 @@ en met iedereen in de Hut-chat praten.
 
 <div class="card">
 
-<h2>📋 Mijn registraties</h2>
+<h2>📋 Registraties</h2>
 
 <div id="visits">
 Nog geen registraties.
@@ -459,7 +495,10 @@ Nog geen registraties.
 
 <h2>➕ Taak toevoegen</h2>
 
-<input id="taskText" placeholder="Bijv. hout halen">
+<input
+    id="taskText"
+    placeholder="Bijv. hout halen"
+>
 
 <button class="primary" onclick="addTask()">
 ➕ Toevoegen
@@ -495,14 +534,20 @@ Nog geen berichten.
 </div>
 
 <input
-id="messageText"
-placeholder="Typ een bericht..."
-onkeydown="if(event.key==='Enter')sendMessage()"
+    id="messageText"
+    placeholder="Typ een bericht..."
+    onkeydown="
+        if(event.key === 'Enter') {
+            sendMessage();
+        }
+    "
 >
 
 <button class="primary" onclick="sendMessage()">
 💬 Versturen
 </button>
+
+<p id="chatStatus"></p>
 
 </div>
 
@@ -515,9 +560,9 @@ onkeydown="if(event.key==='Enter')sendMessage()"
 
 <script>
 
-/* =========================
+/* =========================================
    SUPABASE
-========================= */
+========================================= */
 
 const SUPABASE_URL =
 "https://xmotmmbwcehbtjwgzbor.supabase.co";
@@ -532,36 +577,42 @@ supabase.createClient(
 );
 
 
-/* =========================
+/* =========================================
    VEILIGE TEKST
-========================= */
+========================================= */
 
 function safe(text) {
 
-    return String(text).replace(
+    return String(text ?? "").replace(
         /[&<>"']/g,
-        c => ({
-            "&":"&amp;",
-            "<":"&lt;",
-            ">":"&gt;",
-            '"':"&quot;",
-            "'":"&#039;"
-        }[c])
+        function(c) {
+
+            return {
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                '"':"&quot;",
+                "'":"&#039;"
+            }[c];
+
+        }
     );
 }
 
 
-/* =========================
+/* =========================================
    NAVIGATIE
-========================= */
+========================================= */
 
 function show(id, button) {
 
     document
         .querySelectorAll(".section")
-        .forEach(x =>
-            x.classList.remove("active")
-        );
+        .forEach(function(section) {
+
+            section.classList.remove("active");
+
+        });
 
     document
         .getElementById(id)
@@ -569,39 +620,46 @@ function show(id, button) {
 
     document
         .querySelectorAll("nav button")
-        .forEach(x =>
-            x.classList.remove("active")
-        );
+        .forEach(function(btn) {
+
+            btn.classList.remove("active");
+
+        });
 
     button.classList.add("active");
 
+    load();
 }
 
 
-/* =========================
+/* =========================================
    NU-KNOP
-========================= */
+========================================= */
 
-function now(id) {
+function setNow(id) {
 
     const d = new Date();
 
-    const h =
-        String(d.getHours()).padStart(2,"0");
+    const hours =
+        String(d.getHours())
+        .padStart(2, "0");
 
-    const m =
-        String(d.getMinutes()).padStart(2,"0");
+    const minutes =
+        String(d.getMinutes())
+        .padStart(2, "0");
 
-    document.getElementById(id).value =
-        h + ":" + m;
+    document
+        .getElementById(id)
+        .value =
+        hours + ":" + minutes;
 }
 
 
-/* =========================
-   USER
-========================= */
+/* =========================================
+   USER OPHALEN
+========================================= */
 
-async function user() {
+async function getCurrentUser() {
 
     const result =
         await db.auth.getUser();
@@ -610,100 +668,118 @@ async function user() {
 }
 
 
-/* =========================
+/* =========================================
    REGISTER
-========================= */
+========================================= */
 
 async function register() {
 
     const name =
-        document.getElementById("newName")
-        .value.trim();
+        document
+            .getElementById("newName")
+            .value
+            .trim();
 
     const email =
-        document.getElementById("newEmail")
-        .value.trim();
+        document
+            .getElementById("newEmail")
+            .value
+            .trim();
 
     const password =
-        document.getElementById("newPassword")
-        .value;
+        document
+            .getElementById("newPassword")
+            .value;
 
-    const msg =
-        document.getElementById("registerMessage");
+    const message =
+        document
+            .getElementById("registerMessage");
 
     if(!name || !email || !password) {
 
-        msg.textContent =
+        message.textContent =
             "Vul alles in.";
 
-        msg.className = "error";
+        message.className =
+            "error";
 
         return;
     }
 
-    const {error} =
+    const result =
         await db.auth.signUp({
 
             email: email,
+
             password: password,
 
             options: {
+
                 data: {
                     name: name
                 }
+
             }
 
         });
 
-    if(error) {
+    if(result.error) {
 
-        msg.textContent =
-            error.message;
+        message.textContent =
+            result.error.message;
 
-        msg.className = "error";
+        message.className =
+            "error";
 
         return;
     }
 
-    msg.textContent =
+    message.textContent =
         "✅ Account gemaakt! Je kunt nu inloggen.";
 
-    msg.className = "success";
+    message.className =
+        "success";
 }
 
 
-/* =========================
+/* =========================================
    LOGIN
-========================= */
+========================================= */
 
 async function login() {
 
     const email =
-        document.getElementById("email")
-        .value.trim();
+        document
+            .getElementById("email")
+            .value
+            .trim();
 
     const password =
-        document.getElementById("password")
-        .value;
+        document
+            .getElementById("password")
+            .value;
 
-    const msg =
-        document.getElementById("loginMessage");
+    const message =
+        document
+            .getElementById("loginMessage");
 
-    const {error} =
+    const result =
         await db.auth.signInWithPassword({
 
             email: email,
+
             password: password
 
         });
 
-    if(error) {
+    if(result.error) {
 
-        msg.textContent =
+        message.textContent =
             "Inloggen mislukt: " +
-            error.message;
+            result.error.message;
 
-        msg.className = "error";
+        message.className =
+            "error";
 
         return;
     }
@@ -712,9 +788,9 @@ async function login() {
 }
 
 
-/* =========================
+/* =========================================
    LOGOUT
-========================= */
+========================================= */
 
 async function logout() {
 
@@ -724,66 +800,97 @@ async function logout() {
 }
 
 
-/* =========================
+/* =========================================
    APP STARTEN
-========================= */
+========================================= */
 
 async function startApp() {
 
-    const u = await user();
+    const u =
+        await getCurrentUser();
 
-    if(!u) return;
+    if(!u) {
+
+        document
+            .getElementById("login")
+            .classList.add("active");
+
+        return;
+    }
 
     const name =
         u.user_metadata?.name ||
         u.email.split("@")[0];
 
-    document.getElementById("myName").value =
+    document
+        .getElementById("myName")
+        .value =
         name;
 
-    document.getElementById("loginStatus")
+    document
+        .getElementById("loginStatus")
         .innerHTML =
         "👋 Ingelogd als <b>" +
         safe(name) +
         "</b>";
 
-    document.getElementById("logout")
-        .style.display = "inline-block";
+    document
+        .getElementById("logout")
+        .style.display =
+        "inline-block";
 
-    document.getElementById("nav")
-        .style.display = "flex";
+    document
+        .getElementById("nav")
+        .style.display =
+        "flex";
 
-    document.getElementById("login")
+    document
+        .getElementById("login")
         .classList.remove("active");
 
-    document.getElementById("home")
+    document
+        .getElementById("home")
         .classList.add("active");
 
     await load();
 }
 
 
-/* =========================
+/* =========================================
    UREN OPSLAAN
-========================= */
+========================================= */
 
 async function saveVisit() {
 
-    const u = await user();
+    const u =
+        await getCurrentUser();
 
-    if(!u) return;
+    if(!u) {
+
+        alert("Je bent niet ingelogd.");
+
+        return;
+    }
 
     const name =
-        document.getElementById("myName").value;
+        document
+            .getElementById("myName")
+            .value;
 
     const date =
-        document.getElementById("date").value;
+        document
+            .getElementById("date")
+            .value;
 
     const start =
-        document.getElementById("start").value;
+        document
+            .getElementById("start")
+            .value;
 
     const end =
-        document.getElementById("end").value;
+        document
+            .getElementById("end")
+            .value;
 
     if(!date || !start || !end) {
 
@@ -795,110 +902,143 @@ async function saveVisit() {
     }
 
     let s =
-        new Date("2000-01-01T" + start);
+        new Date(
+            "2000-01-01T" + start
+        );
 
     let e =
-        new Date("2000-01-01T" + end);
+        new Date(
+            "2000-01-01T" + end
+        );
 
     if(e <= s) {
-        e.setDate(e.getDate() + 1);
+
+        e.setDate(
+            e.getDate() + 1
+        );
+
     }
 
     const hours =
         (e - s) / 3600000;
 
-    const {error} =
+    const result =
         await db
-        .from("visits")
-        .insert({
+            .from("visits")
+            .insert({
 
-            user_id: u.id,
-            name: name,
-            date: date,
-            start: start,
-            end: end,
-            hours: hours
+                user_id: u.id,
 
-        });
+                name: name,
 
-    if(error) {
+                date: date,
+
+                start: start,
+
+                end: end,
+
+                hours: hours
+
+            });
+
+    if(result.error) {
 
         alert(
             "Fout bij opslaan:\n" +
-            error.message
+            result.error.message
         );
 
         return;
     }
 
-    document.getElementById("visitMessage")
+    document
+        .getElementById("visitMessage")
         .textContent =
         "✅ " +
         hours.toFixed(2) +
         " uur opgeslagen!";
 
-    document.getElementById("visitMessage")
-        .className = "success";
+    document
+        .getElementById("visitMessage")
+        .className =
+        "success";
 
     await load();
 }
 
 
-/* =========================
+/* =========================================
    TAAK TOEVOEGEN
-========================= */
+========================================= */
 
 async function addTask() {
 
-    const u = await user();
+    const u =
+        await getCurrentUser();
 
     const text =
-        document.getElementById("taskText")
-        .value.trim();
+        document
+            .getElementById("taskText")
+            .value
+            .trim();
 
-    if(!u || !text) return;
-
-    const {error} =
-        await db
-        .from("tasks")
-        .insert({
-
-            user_id: u.id,
-            text: text,
-            done: false
-
-        });
-
-    if(error) {
-
-        alert(error.message);
+    if(!u || !text) {
 
         return;
     }
 
-    document.getElementById("taskText")
+    const result =
+        await db
+            .from("tasks")
+            .insert({
+
+                user_id: u.id,
+
+                text: text,
+
+                done: false
+
+            });
+
+    if(result.error) {
+
+        alert(
+            result.error.message
+        );
+
+        return;
+    }
+
+    document
+        .getElementById("taskText")
         .value = "";
 
     await load();
 }
 
 
-/* =========================
+/* =========================================
    TAAK AAN/UIT
-========================= */
+========================================= */
 
 async function toggleTask(id, done) {
 
-    const {error} =
+    const result =
         await db
-        .from("tasks")
-        .update({
-            done: !done
-        })
-        .eq("id", id);
+            .from("tasks")
+            .update({
 
-    if(error) {
-        alert(error.message);
+                done: !done
+
+            })
+            .eq("id", id);
+
+    if(result.error) {
+
+        alert(
+            result.error.message
+        );
+
         return;
     }
 
@@ -906,20 +1046,24 @@ async function toggleTask(id, done) {
 }
 
 
-/* =========================
+/* =========================================
    TAAK VERWIJDEREN
-========================= */
+========================================= */
 
 async function deleteTask(id) {
 
-    const {error} =
+    const result =
         await db
-        .from("tasks")
-        .delete()
-        .eq("id", id);
+            .from("tasks")
+            .delete()
+            .eq("id", id);
 
-    if(error) {
-        alert(error.message);
+    if(result.error) {
+
+        alert(
+            result.error.message
+        );
+
         return;
     }
 
@@ -927,77 +1071,224 @@ async function deleteTask(id) {
 }
 
 
-/* =========================
-   CHAT
-========================= */
+/* =========================================
+   CHAT BERICHT VERSTUREN
+========================================= */
 
 async function sendMessage() {
 
-    const u = await user();
+    const u =
+        await getCurrentUser();
+
+    const input =
+        document
+            .getElementById("messageText");
 
     const text =
-        document.getElementById("messageText")
-        .value.trim();
+        input
+            .value
+            .trim();
 
-    if(!u || !text) return;
+    const status =
+        document
+            .getElementById("chatStatus");
+
+    if(!u) {
+
+        status.textContent =
+            "Je bent niet ingelogd.";
+
+        status.className =
+            "error";
+
+        return;
+    }
+
+    if(!text) {
+
+        return;
+    }
 
     const name =
         u.user_metadata?.name ||
         u.email.split("@")[0];
 
-    const {error} =
+    const result =
         await db
-        .from("messages")
-        .insert({
+            .from("messages")
+            .insert({
 
-            user_id: u.id,
-            name: name,
-            text: text
+                user_id: u.id,
 
-        });
+                name: name,
 
-    if(error) {
+                text: text
 
-        alert(error.message);
+            });
+
+    if(result.error) {
+
+        status.textContent =
+            "Fout: " +
+            result.error.message;
+
+        status.className =
+            "error";
 
         return;
     }
 
-    document.getElementById("messageText")
-        .value = "";
+    input.value = "";
 
-    await load();
+    status.textContent =
+        "✅ Bericht verstuurd!";
+
+    status.className =
+        "success";
+
+    await loadChat();
 }
 
 
-/* =========================
+/* =========================================
+   CHAT LADEN
+========================================= */
+
+async function loadChat() {
+
+    const box =
+        document
+            .getElementById("messages");
+
+    const result =
+        await db
+            .from("messages")
+            .select(
+                "id, user_id, name, text, created_at"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            );
+
+    if(result.error) {
+
+        console.error(
+            "Chat laden:",
+            result.error
+        );
+
+        box.innerHTML =
+            "<p class='error'>" +
+            "Chat laden mislukt:<br>" +
+            safe(result.error.message) +
+            "</p>";
+
+        return;
+    }
+
+    const messages =
+        result.data || [];
+
+    if(messages.length === 0) {
+
+        box.innerHTML =
+            "Nog geen berichten.";
+
+        return;
+    }
+
+    box.innerHTML =
+        messages
+            .map(function(message) {
+
+                let time = "";
+
+                if(message.created_at) {
+
+                    time =
+                        new Date(
+                            message.created_at
+                        )
+                        .toLocaleTimeString(
+                            "nl-NL",
+                            {
+                                hour: "2-digit",
+                                minute: "2-digit"
+                            }
+                        );
+
+                }
+
+                return `
+                    <div class="message">
+
+                        <b>
+                            ${safe(message.name)}
+                        </b>
+
+                        <small>
+                            ${time}
+                        </small>
+
+                        <br>
+
+                        ${safe(message.text)}
+
+                    </div>
+                `;
+
+            })
+            .join("");
+
+    box.scrollTop =
+        box.scrollHeight;
+}
+
+
+/* =========================================
    ALLES LADEN
-========================= */
+========================================= */
 
 async function load() {
 
-    /* UREN */
+    /* ===============================
+       UREN
+    =============================== */
 
-    const {data: visits, error: ve} =
+    const visitsResult =
         await db
-        .from("visits")
-        .select("*")
-        .order("date", {
-            ascending: false
-        });
+            .from("visits")
+            .select("*")
+            .order(
+                "date",
+                {
+                    ascending: false
+                }
+            );
 
-    if(ve) {
+    if(visitsResult.error) {
 
-        console.error(ve);
+        console.error(
+            visitsResult.error
+        );
 
     } else {
 
+        const visits =
+            visitsResult.data || [];
+
         const totals = {};
 
-        visits.forEach(v => {
+        visits.forEach(function(v) {
 
-            if(!totals[v.name])
+            if(!totals[v.name]) {
+
                 totals[v.name] = 0;
+
+            }
 
             totals[v.name] +=
                 Number(v.hours);
@@ -1006,215 +1297,269 @@ async function load() {
 
         const names =
             Object.keys(totals)
-            .sort(
-                (a,b) =>
-                    totals[b] - totals[a]
-            );
+                .sort(function(a,b) {
 
+                    return totals[b] -
+                           totals[a];
 
-        /* LEADERBOARD */
+                });
+
 
         document
-            .getElementById("leaderboardBody")
-            .innerHTML = names.length
+            .getElementById(
+                "leaderboardBody"
+            )
+            .innerHTML =
+            names.length
 
-            ? names.map((n,i) => {
+            ? names
+                .map(function(name,index) {
 
-                const medal =
-                    i === 0 ? "🥇" :
-                    i === 1 ? "🥈" :
-                    i === 2 ? "🥉" :
-                    i + 1;
+                    let medal;
 
-                return `
-                <tr>
-                    <td>${medal}</td>
-                    <td>${safe(n)}</td>
-                    <td>${totals[n].toFixed(1)} uur</td>
-                </tr>
-                `;
+                    if(index === 0) {
+                        medal = "🥇";
+                    }
+                    else if(index === 1) {
+                        medal = "🥈";
+                    }
+                    else if(index === 2) {
+                        medal = "🥉";
+                    }
+                    else {
+                        medal = index + 1;
+                    }
 
-            }).join("")
+                    return `
+                        <tr>
+
+                            <td>
+                                ${medal}
+                            </td>
+
+                            <td>
+                                ${safe(name)}
+                            </td>
+
+                            <td>
+                                ${totals[name]
+                                    .toFixed(1)}
+                                uur
+                            </td>
+
+                        </tr>
+                    `;
+
+                })
+                .join("")
 
             : `
-            <tr>
-                <td colspan="3">
-                    Nog geen uren geregistreerd.
-                </td>
-            </tr>
+                <tr>
+                    <td colspan="3">
+                        Nog geen uren geregistreerd.
+                    </td>
+                </tr>
             `;
 
 
-        /* TOTAAL */
-
         const total =
             visits.reduce(
-                (sum,v) =>
-                    sum + Number(v.hours),
+                function(sum,v) {
+
+                    return sum +
+                           Number(v.hours);
+
+                },
                 0
             );
 
-        document.getElementById("total")
+        document
+            .getElementById("total")
             .textContent =
             total.toFixed(1) + "u";
 
-        document.getElementById("users")
+        document
+            .getElementById("users")
             .textContent =
             names.length;
 
 
-        /* REGISTRATIES */
+        document
+            .getElementById("visits")
+            .innerHTML =
+            visits.length
 
-        document.getElementById("visits")
-            .innerHTML = visits.length
+            ? visits
+                .map(function(v) {
 
-            ? visits.map(v => `
-                <p class="small">
-                    <b>${safe(v.name)}</b><br>
-                    ${v.date}<br>
-                    ${v.start} – ${v.end}
-                    = ${Number(v.hours).toFixed(2)} uur
-                </p>
-                <hr>
-            `).join("")
+                    return `
+                        <p class="small">
+
+                            <b>
+                                ${safe(v.name)}
+                            </b>
+
+                            <br>
+
+                            ${safe(v.date)}
+
+                            <br>
+
+                            ${safe(v.start)}
+                            –
+                            ${safe(v.end)}
+
+                            =
+                            ${Number(v.hours)
+                                .toFixed(2)}
+                            uur
+
+                        </p>
+
+                        <hr>
+                    `;
+
+                })
+                .join("")
 
             : "Nog geen registraties.";
+
     }
 
 
-    /* TAKEN */
+    /* ===============================
+       TAKEN
+    =============================== */
 
-    const {data:tasks, error:te} =
+    const tasksResult =
         await db
-        .from("tasks")
-        .select("*")
-        .order("created_at");
+            .from("tasks")
+            .select("*")
+            .order(
+                "created_at",
+                {
+                    ascending: true
+                }
+            );
 
-    if(!te) {
+    if(tasksResult.error) {
 
-        document.getElementById("openTasks")
+        console.error(
+            tasksResult.error
+        );
+
+    } else {
+
+        const tasks =
+            tasksResult.data || [];
+
+        document
+            .getElementById("openTasks")
             .textContent =
-            tasks.filter(t => !t.done).length;
+            tasks.filter(function(t) {
 
-        document.getElementById("tasks")
-            .innerHTML = tasks.length
+                return !t.done;
 
-            ? tasks.map(t => `
-                <div class="task">
+            }).length;
 
-                    <input
-                        type="checkbox"
-                        ${t.done ? "checked" : ""}
-                        onchange="
-                            toggleTask(
-                                ${t.id},
-                                ${t.done}
-                            )
-                        "
-                    >
+        document
+            .getElementById("tasks")
+            .innerHTML =
+            tasks.length
 
-                    <span class="${t.done ? "done" : ""}">
-                        ${safe(t.text)}
-                    </span>
+            ? tasks
+                .map(function(t) {
 
-                    <button
-                        class="danger"
-                        onclick="deleteTask(${t.id})"
-                    >
-                        ×
-                    </button>
+                    return `
+                        <div class="task">
 
-                </div>
-            `).join("")
+                            <input
+                                type="checkbox"
+                                ${
+                                    t.done
+                                    ? "checked"
+                                    : ""
+                                }
+                                onchange="
+                                    toggleTask(
+                                        ${t.id},
+                                        ${t.done}
+                                    )
+                                "
+                            >
+
+                            <span class="${
+                                t.done
+                                ? "done"
+                                : ""
+                            }">
+
+                                ${safe(t.text)}
+
+                            </span>
+
+                            <button
+                                class="danger"
+                                onclick="
+                                    deleteTask(
+                                        ${t.id}
+                                    )
+                                "
+                            >
+                                ×
+                            </button>
+
+                        </div>
+                    `;
+
+                })
+                .join("")
 
             : "🎉 Geen taken!";
+
     }
 
-/* CHAT */
 
-const { data: messages, error: me } =
-    await db
-    .from("messages")
-    .select("*")
-    .order("created_at", { ascending: true });
+    /* ===============================
+       CHAT
+    =============================== */
 
-if (me) {
-
-    console.error(me);
-
-    return;
-
-}
-
-const box =
-    document.getElementById("messages");
-
-if (!messages || messages.length === 0) {
-
-    box.innerHTML = "Nog geen berichten.";
-
-} else {
-
-    box.innerHTML =
-        messages.map(m => {
-
-            const time =
-                m.created_at
-                    ? new Date(m.created_at)
-                        .toLocaleTimeString(
-                            "nl-NL",
-                            {
-                                hour: "2-digit",
-                                minute: "2-digit"
-                            }
-                        )
-                    : "";
-
-            return `
-                <div class="message">
-
-                    <b>${safe(m.name)}</b>
-
-                    <small>${time}</small>
-
-                    <br>
-
-                    ${safe(m.text)}
-
-                </div>
-            `;
-
-        }).join("");
-
-    box.scrollTop =
-        box.scrollHeight;
-}
+    await loadChat();
 }
 
 
-/* =========================
+/* =========================================
    DATUM VANDAAG
-========================= */
+========================================= */
 
-document.getElementById("date").value =
+document
+    .getElementById("date")
+    .value =
     new Date()
-    .toISOString()
-    .slice(0,10);
+        .toISOString()
+        .slice(0,10);
 
 
-/* =========================
-   START
-========================= */
+/* =========================================
+   AUTHENTICATIE
+========================================= */
 
 db.auth.onAuthStateChange(
-    (event, session) => {
+    function(event, session) {
 
         if(session) {
+
             startApp();
+
         }
 
     }
 );
+
+
+/* =========================================
+   START
+========================================= */
 
 startApp();
 
