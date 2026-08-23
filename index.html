@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>De Hut 🏕️</title>
+
+<style>
+    :root {
+        --groen: #234d35;
+        --donkergroen: #13251a;
+        --licht: #f4f1e8;
+        --wit: #fffdf8;
+        --accent: #d99a36;
+        --rood: #b74335;
+    }
+
+    * {
+        box-sizing: border-box;
+    }
+
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: var(--licht);
+        color: #18231b;
+    }
+
+    /* HEADER */
+
+    header {
+        background: linear-gradient(135deg, var(--donkergroen), var(--groen));
+        color: white;
+        padding: 30px 20px;
+        text-align: center;
+    }
+
+    header h1 {
+        margin: 0;
+        font-size: 45px;
+    }
+
+    header p {
+        margin: 8px 0 0;
+        opacity: 0.85;
+        font-size: 17px;
+    }
+
+    /* NAVIGATIE */
+
+    nav {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+
+        background: white;
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+
+        padding: 10px;
+
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+
+        flex-wrap: wrap;
+    }
+
+    nav button {
+        border: none;
+        background: #eeeeee;
+
+        padding: 11px 16px;
+
+        border-radius: 999px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        transition: 0.2s;
+    }
+
+    nav button:hover {
+        transform: translateY(-2px);
+    }
+
+    nav button.active {
+        background: var(--groen);
+        color: white;
+    }
+
+    /* MAIN */
+
+    main {
+        max-width: 1050px;
+
+        margin: 30px auto;
+
+        padding: 0 15px;
+    }
+
+    .section {
+        display: none;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    /* KAARTEN */
+
+    .grid {
+        display: grid;
+
+        grid-template-columns:
+            repeat(auto-fit, minmax(280px, 1fr));
+
+        gap: 20px;
+    }
+
+    .card {
+        background: var(--wit);
+
+        padding: 22px;
+
+        border-radius: 18px;
+
+        box-shadow:
+            0 4px 18px rgba(0,0,0,0.08);
+    }
+
+    h2 {
+        margin-top: 0;
+
+        color: var(--groen);
+    }
+
+    /* FORMULIEREN */
+
+    label {
+        display: block;
+
+        margin-top: 13px;
+        margin-bottom: 5px;
+
+        font-weight: bold;
+    }
+
+    input,
+    textarea {
+        width: 100%;
+
+        padding: 12px;
+
+        border: 1px solid #cccccc;
+
+        border-radius: 10px;
+
+        font-size: 16px;
+
+        font-family: inherit;
+    }
+
+    textarea {
+        resize: vertical;
+    }
+
+    .primary {
+        background: var(--groen);
+
+        color: white;
+
+        border: none;
+
+        padding: 12px 17px;
+
+        border-radius: 10px;
+
+        font-weight: bold;
+
+        cursor: pointer;
+
+        margin-top: 14px;
+    }
+
+    .primary:hover {
+        background: #316846;
+    }
+
+    .danger {
+        background: var(--rood);
+
+        color: white;
+
+        border: none;
+
+        padding: 7px 10px;
+
+        border-radius: 8px;
+
+        cursor: pointer;
+    }
+
+    /* STATISTIEKEN */
+
+    .stat {
+        text-align: center;
+    }
+
+    .stat b {
+        display: block;
+
+        font-size: 38px;
+
+        color: var(--groen);
+
+        margin-bottom: 5px;
+    }
+
+    /* TABEL */
+
+    table {
+        width: 100%;
+
+        border-collapse: collapse;
+    }
+
+    th,
+    td {
+        text-align: left;
+
+        padding: 12px;
+
+        border-bottom: 1px solid #dddddd;
+    }
+
+    th {
+        color: var(--groen);
+    }
+
+    .rank {
+        font-size: 25px;
+
+        width: 60px;
+    }
+
+    /* TAKEN */
+
+    .task {
+        display: flex;
+
+        align-items: center;
+
+        gap: 10px;
+
+        padding: 12px 0;
+
+        border-bottom: 1px solid #dddddd;
+    }
+
+    .task input {
+        width: auto;
+    }
+
+    .task-text {
+        flex: 1;
+    }
+
+    .done {
+        text-decoration: line-through;
+
+        color: #888888;
+    }
+
+    /* CHAT */
+
+    .chat {
+        height: 400px;
+
+        overflow-y: auto;
+
+        background: #efede6;
+
+        border-radius: 12px;
+
+        padding: 12px;
+
+        margin-bottom: 12px;
+    }
+
+    .message {
+        background: white;
+
+        padding: 10px 13px;
+
+        border-radius: 12px;
+
+        margin: 8px 0;
+
+        max-width: 85%;
+    }
+
+    .message-name {
+        font-weight: bold;
+
+        color: var(--groen);
+    }
+
+    .message-time {
+        color: #777;
+
+        font-size: 12px;
+    }
+
+    /* EXTRA */
+
+    .small {
+        color: #687268;
+
+        font-size: 13px;
+    }
+
+    .success {
+        color: #258442;
+
+        font-weight: bold;
+    }
+
+    footer {
+        text-align: center;
+
+        padding: 40px 20px;
+
+        color: #687268;
+    }
+
+    /* MOBIEL */
+
+    @media (max-width: 600px) {
+
+        header h1 {
+            font-size: 35px;
+        }
+
+        nav {
+            justify-content: flex-start;
+            overflow-x: auto;
+        }
+
+        nav button {
+            flex-shrink: 0;
+        }
+
+        .card {
+            padding: 17px;
+        }
+
+        th,
+        td {
+            padding: 8px;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+    <h1>🏕️ De Hut</h1>
+
+    <p>
+        Uren • Leaderboard • To-do • Chat
+    </p>
+
+</header>
+
+
+<!-- NAVIGATIE -->
+
+<nav>
+
+    <button
+        class="active"
+        onclick="showSection('home', this)"
+    >
+        🏠 Home
+    </button>
+
+    <button
+        onclick="showSection('uren', this)"
+    >
+        ⏱️ Uren
+    </button>
+
+    <button
+        onclick="showSection('leaderboard', this)"
+    >
+        🏆 Leaderboard
+    </button>
+
+    <button
+        onclick="showSection('todo', this)"
+    >
+        ✅ To-do
+    </button>
+
+    <button
+        onclick="showSection('chat', this)"
+    >
+        💬 Chat
+    </button>
+
+</nav>
+
+
+<main>
+
+<!-- ========================= -->
+<!-- HOME -->
+<!-- ========================= -->
+
+<section
+    id="home"
+    class="section active"
+>
+
+    <div class="grid">
+
+        <div class="card stat">
+
+            <b id="totalHours">
+                0u
+            </b>
+
+            geregistreerde hut-uren
+
+        </div>
+
+
+        <div class="card stat">
+
+            <b id="peopleCount">
+                0
+            </b>
+
+            gebruikers
+
+        </div>
+
+
+        <div class="card stat">
+
+            <b id="todoCount">
+                0
+            </b>
+
+            openstaande taken
+
+        </div>
+
+    </div>
+
+
+    <br>
+
+
+    <div class="card">
+
+        <h2>
+            🏕️ Welkom bij De Hut
+        </h2>
+
+        <p>
+            Houd hier bij wanneer je bij de hut bent geweest,
+            hoeveel uur je er hebt doorgebracht en wie de meeste
+            hut-uren heeft.
+        </p>
+
+        <p>
+            Gebruik daarnaast de takenlijst om te zien wat er
+            nog moet gebeuren en de chat om met elkaar te praten.
+        </p>
+
+        <p class="small">
+            Deze eerste versie bewaart gegevens op dit apparaat
+            in je browser.
+        </p>
+
+    </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- UREN -->
+<!-- ========================= -->
+
+<section
+    id="uren"
+    class="section"
+>
+
+    <div class="grid">
+
+
+        <div class="card">
+
+            <h2>
+                ⏱️ Uren registreren
+            </h2>
+
+
+            <label>
+                Naam
+            </label>
+
+            <input
+                id="name"
+                placeholder="Bijv. Bram"
+            >
+
+
+            <label>
+                Datum
+            </label>
+
+            <input
+                id="date"
+                type="date"
+            >
+
+
+            <label>
+                Aankomst
+            </label>
+
+            <input
+                id="start"
+                type="time"
+            >
+
+
+            <label>
+                Vertrek
+            </label>
+
+            <input
+                id="end"
+                type="time"
+            >
+
+
+            <button
+                class="primary"
+                onclick="addVisit()"
+            >
+                💾 Uren opslaan
+            </button>
+
+
+            <p
+                id="visitResult"
+                class="small"
+            ></p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>
+                📋 Registraties
+            </h2>
+
+            <div id="visits">
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- LEADERBOARD -->
+<!-- ========================= -->
+
+<section
+    id="leaderboard"
+    class="section"
+>
+
+    <div class="card">
+
+        <h2>
+            🏆 Hut Leaderboard
+        </h2>
+
+        <p class="small">
+            Wie heeft de meeste uren bij de hut?
+        </p>
+
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        #
+                    </th>
+
+                    <th>
+                        Naam
+                    </th>
+
+                    <th>
+                        Uren
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody
+                id="leaderboardBody"
+            >
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- TODO -->
+<!-- ========================= -->
+
+<section
+    id="todo"
+    class="section"
+>
+
+    <div class="grid">
+
+
+        <div class="card">
+
+            <h2>
+                ➕ Nieuwe taak
+            </h2>
+
+
+            <input
+                id="taskInput"
+                placeholder="Bijv. hout halen"
+            >
+
+
+            <button
+                class="primary"
+                onclick="addTask()"
+            >
+                ➕ Taak toevoegen
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <h2>
+                ✅ To-do lijst
+            </h2>
+
+            <div id="tasks">
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- ========================= -->
+<!-- CHAT -->
+<!-- ========================= -->
+
+<section
+    id="chat"
+    class="section"
+>
+
+    <div class="card">
+
+        <h2>
+            💬 Hut-chat
+        </h2>
+
+
+        <div
+            id="messages"
+            class="chat"
+        >
+        </div>
+
+
+        <div class="grid">
+
+            <div>
+
+                <label>
+                    Naam
+                </label>
+
+                <input
+                    id="chatName"
+                    placeholder="Je naam"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label>
+                    Bericht
+                </label>
+
+                <input
+                    id="chatText"
+                    placeholder="Typ een bericht..."
+                    onkeydown="
+                        if(event.key === 'Enter')
+                        sendMessage()
+                    "
+                >
+
+            </div>
+
+        </div>
+
+
+        <button
+            class="primary"
+            onclick="sendMessage()"
+        >
+            💬 Versturen
+        </button>
+
+    </div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+    🏕️ De Hut
+
+    <br>
+
+    <span class="small">
+        Samen maken we de hut beter.
+    </span>
+
+</footer>
+
+
+<script>
+
+/* ================================= */
+/* GEGEVENS OPSLAAN */
+/* ================================= */
+
+function getData(key, fallback) {
+
+    const data =
+        localStorage.getItem(key);
+
+    if (!data) {
+
+        return fallback;
+
+    }
+
+    return JSON.parse(data);
+
+}
+
+
+function saveData(key, data) {
+
+    localStorage.setItem(
+        key,
+        JSON.stringify(data)
+    );
+
+}
+
+
+/* ================================= */
+/* DATA */
+/* ================================= */
+
+let visits =
+    getData("hut_visits", []);
+
+let tasks =
+    getData("hut_tasks", []);
+
+let messages =
+    getData("hut_messages", []);
+
+
+/* ================================= */
+/* NAVIGATIE */
+/* ================================= */
+
+function showSection(sectionId, button) {
+
+    document
+        .querySelectorAll(".section")
+        .forEach(section => {
+
+            section.classList.remove("active");
+
+        });
+
+
+    document
+        .getElementById(sectionId)
+        .classList.add("active");
+
+
+    document
+        .querySelectorAll("nav button")
+        .forEach(btn => {
+
+            btn.classList.remove("active");
+
+        });
+
+
+    button.classList.add("active");
+
+
+    render();
+
+}
+
+
+/* ================================= */
+/* UREN TOEVOEGEN */
+/* ================================= */
+
+function addVisit() {
+
+    const name =
+        document
+            .getElementById("name")
+            .value
+            .trim();
+
+
+    const date =
+        document
+            .getElementById("date")
+            .value;
+
+
+    const start =
+        document
+            .getElementById("start")
+            .value;
+
+
+    const end =
+        document
+            .getElementById("end")
+            .value;
+
+
+    if (
+        !name ||
+        !date ||
+        !start ||
+        !end
+    ) {
+
+        alert(
+            "Vul alle velden in."
+        );
+
+        return;
+
+    }
+
+
+    let startTime =
+        new Date(
+            "2000-01-01T" + start
+        );
+
+
+    let endTime =
+        new Date(
+            "2000-01-01T" + end
+        );
+
+
+    /*
+       Als iemand bijvoorbeeld
+       22:00 tot 02:00 is gebleven,
+       gaan we ervan uit dat het
+       de volgende dag was.
+    */
+
+    if (endTime <= startTime) {
+
+        endTime.setDate(
+            endTime.getDate() + 1
+        );
+
+    }
+
+
+    const milliseconds =
+        endTime - startTime;
+
+
+    const hours =
+        milliseconds / 3600000;
+
+
+    visits.push({
+
+        id: Date.now(),
+
+        name: name,
+
+        date: date,
+
+        start: start,
+
+        end: end,
+
+        hours: hours
+
+    });
+
+
+    saveData(
+        "hut_visits",
+        visits
+    );
+
+
+    document
+        .getElementById("visitResult")
+        .textContent =
+        "✅ Opgeslagen: " +
+        hours.toFixed(2) +
+        " uur";
+
+
+    render();
+
+}
+
+
+/* ================================= */
+/* TAKEN TOEVOEGEN */
+/* ================================= */
+
+function addTask() {
+
+    const input =
+        document.getElementById(
+            "taskInput"
+        );
+
+
+    const text =
+        input.value.trim();
+
+
+    if (!text) {
+
+        return;
+
+    }
+
+
+    tasks.push({
+
+        id: Date.now(),
+
+        text: text,
+
+        done: false
+
+    });
+
+
+    saveData(
+        "hut_tasks",
+        tasks
+    );
+
+
+    input.value = "";
+
+
+    render();
+
+}
+
+
+/* ================================= */
+/* TAAK AAN/UIT */
+/* ================================= */
+
+function toggleTask(id) {
+
+    tasks =
+        tasks.map(task => {
+
+            if (task.id === id) {
+
+                return {
+
+                    ...task,
+
+                    done: !task.done
+
+                };
+
+            }
+
+            return task;
+
+        });
+
+
+    saveData(
+        "hut_tasks",
+        tasks
+    );
+
+
+    render();
+
+}
+
+
+/* ================================= */
+/* TAAK VERWIJDEREN */
+/* ================================= */
+
+function deleteTask(id) {
+
+    tasks =
+        tasks.filter(
+            task => task.id !== id
+        );
+
+
+    saveData(
+        "hut_tasks",
+        tasks
+    );
+
+
+    render();
+
+}
+
+
+/* ================================= */
+/* CHAT BERICHT */
+/* ================================= */
+
+function sendMessage() {
+
+    const name =
+        document
+            .getElementById("chatName")
+            .value
+            .trim();
+
+
+    const text =
+        document
+            .getElementById("chatText")
+            .value
+            .trim();
+
+
+    if (!name || !text) {
+
+        return;
+
+    }
+
+
+    const now =
+        new Date();
+
+
+    const time =
+        now.toLocaleString(
+            "nl-NL",
+            {
+                hour: "2-digit",
+                minute: "2-digit"
+            }
+        );
+
+
+    messages.push({
+
+        id: Date.now(),
+
+        name: name,
+
+        text: text,
+
+        time: time
+
+    });
+
+
+    saveData(
+        "hut_messages",
+        messages
+    );
+
+
+    document
+        .getElementById("chatText")
+        .value = "";
+
+
+    render();
+
+}
+
+
+/* ================================= */
+/* HTML VEILIG MAKEN */
+/* ================================= */
+
+function escapeHTML(text) {
+
+    return text.replace(
+        /[&<>"']/g,
+
+        function(character) {
+
+            const replacements = {
+
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#039;"
+
+            };
+
+            return replacements[
+                character
+            ];
+
+        }
+    );
+
+}
+
+
+/* ================================= */
+/* ALLES TEKENEN */
+/* ================================= */
+
+function render() {
+
+    /* ============================= */
+    /* UREN BEREKENEN */
+    /* ============================= */
+
+    const totals = {};
+
+
+    visits.forEach(
+        visit => {
+
+            if (
+                !totals[visit.name]
+            ) {
+
+                totals[visit.name] = 0;
+
+            }
+
+
+            totals[visit.name]
+                += visit.hours;
+
+        }
+    );
+
+
+    const names =
+        Object.keys(totals)
+        .sort(
+            (a, b) =>
+                totals[b] -
+                totals[a]
+        );
+
+
+    /* ============================= */
+    /* LEADERBOARD */
+    /* ============================= */
+
+    const board =
+        document.getElementById(
+            "leaderboardBody"
+        );
+
+
+    if (names.length === 0) {
+
+        board.innerHTML = `
+            <tr>
+                <td colspan="3">
+                    Nog geen uren geregistreerd.
+                </td>
+            </tr>
+        `;
+
+    } else {
+
+        board.innerHTML =
+            names.map(
+                (name, index) => {
+
+                    let medal;
+
+                    if (index === 0) {
+                        medal = "🥇";
+                    }
+                    else if (index === 1) {
+                        medal = "🥈";
+                    }
+                    else if (index === 2) {
+                        medal = "🥉";
+                    }
+                    else {
+                        medal = index + 1;
+                    }
+
+
+                    return `
+                        <tr>
+
+                            <td class="rank">
+                                ${medal}
+                            </td>
+
+                            <td>
+                                ${escapeHTML(name)}
+                            </td>
+
+                            <td>
+                                ${totals[name].toFixed(1)}
+                                uur
+                            </td>
+
+                        </tr>
+                    `;
+
+                }
+            ).join("");
+
+    }
+
+
+    /* ============================= */
+    /* TOTAAL UREN */
+    /* ============================= */
+
+    const total =
+        visits.reduce(
+            (sum, visit) =>
+                sum + visit.hours,
+            0
+        );
+
+
+    document
+        .getElementById("totalHours")
+        .textContent =
+        total.toFixed(1) + "u";
+
+
+    /* ============================= */
+    /* AANTAL GEBRUIKERS */
+    /* ============================= */
+
+    document
+        .getElementById("peopleCount")
+        .textContent =
+        names.length;
+
+
+    /* ============================= */
+    /* OPEN TAKEN */
+    /* ============================= */
+
+    document
+        .getElementById("todoCount")
+        .textContent =
+        tasks.filter(
+            task => !task.done
+        ).length;
+
+
+    /* ============================= */
+    /* REGISTRATIES */
+    /* ============================= */
+
+    const visitContainer =
+        document.getElementById(
+            "visits"
+        );
+
+
+    if (visits.length === 0) {
+
+        visitContainer.innerHTML =
+            "Nog geen registraties.";
+
+    } else {
+
+        visitContainer.innerHTML =
+            visits
+                .slice()
+                .reverse()
+                .map(
+                    visit => `
+
+                        <div class="small">
+
+                            <b>
+                                ${escapeHTML(
+                                    visit.name
+                                )}
+                            </b>
+
+                            <br>
+
+                            ${visit.date}
+
+                            <br>
+
+                            ${visit.start}
+                            –
+                            ${visit.end}
+
+                            =
+
+                            ${visit.hours.toFixed(2)}
+                            uur
+
+                        </div>
+
+                        <hr>
+                    `
+                )
+                .join("");
+
+    }
+
+
+    /* ============================= */
+    /* TAKEN */
+    /* ============================= */
+
+    const taskContainer =
+        document.getElementById(
+            "tasks"
+        );
+
+
+    if (tasks.length === 0) {
+
+        taskContainer.innerHTML =
+            "🎉 Geen taken!";
+
+    } else {
+
+        taskContainer.innerHTML =
+            tasks
+                .map(
+                    task => `
+
+                    <div class="task">
+
+                        <input
+                            type="checkbox"
+                            ${
+                                task.done
+                                    ? "checked"
+                                    : ""
+                            }
+
+                            onchange="
+                                toggleTask(
+                                    ${task.id}
+                                )
+                            "
+                        >
+
+                        <span
+                            class="
+                                task-text
+                                ${
+                                    task.done
+                                        ? "done"
+                                        : ""
+                                }
+                            "
+                        >
+                            ${escapeHTML(
+                                task.text
+                            )}
+                        </span>
+
+                        <button
+                            class="danger"
+                            onclick="
+                                deleteTask(
+                                    ${task.id}
+                                )
+                            "
+                        >
+                            ×
+                        </button>
+
+                    </div>
+
+                `
+                )
+                .join("");
+
+    }
+
+
+    /* ============================= */
+    /* CHAT */
+    /* ============================= */
+
+    const chat =
+        document.getElementById(
+            "messages"
+        );
+
+
+    if (messages.length === 0) {
+
+        chat.innerHTML =
+            "<p class='small'>Nog geen berichten.</p>";
+
+    } else {
+
+        chat.innerHTML =
+            messages
+                .map(
+                    message => `
+
+                    <div class="message">
+
+                        <span
+                            class="message-name"
+                        >
+                            ${escapeHTML(
+                                message.name
+                            )}
+                        </span>
+
+                        <span
+                            class="message-time"
+                        >
+                            ${message.time}
+                        </span>
+
+                        <br>
+
+                        ${escapeHTML(
+                            message.text
+                        )}
+
+                    </div>
+
+                `
+                )
+                .join("");
+
+        chat.scrollTop =
+            chat.scrollHeight;
+
+    }
+
+}
+
+
+/* ================================= */
+/* DATUM VANDAAG */
+/* ================================= */
+
+document
+    .getElementById("date")
+    .value =
+    new Date()
+        .toISOString()
+        .slice(0, 10);
+
+
+/* ================================= */
+/* START */
+/* ================================= */
+
+render();
+
+</script>
+
+</body>
+</html>
