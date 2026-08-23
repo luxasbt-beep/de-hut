@@ -1130,55 +1130,65 @@ async function load() {
             : "🎉 Geen taken!";
     }
 
+/* CHAT */
 
-    /* CHAT */
+const { data: messages, error: me } =
+    await db
+    .from("messages")
+    .select("*")
+    .order("created_at", { ascending: true });
 
-    const {data:messages, error:me} =
-        await db
-        .from("messages")
-        .select("*")
-        .order("created_at");
+if (me) {
 
-    if(!me) {
+    console.error(me);
 
-        const box =
-            document.getElementById("messages");
+    return;
 
-        box.innerHTML = messages.length
+}
 
-        ? messages.map(m => {
+const box =
+    document.getElementById("messages");
+
+if (!messages || messages.length === 0) {
+
+    box.innerHTML = "Nog geen berichten.";
+
+} else {
+
+    box.innerHTML =
+        messages.map(m => {
 
             const time =
-                new Date(
-                    m.created_at
-                ).toLocaleTimeString(
-                    "nl-NL",
-                    {
-                        hour:"2-digit",
-                        minute:"2-digit"
-                    }
-                );
+                m.created_at
+                    ? new Date(m.created_at)
+                        .toLocaleTimeString(
+                            "nl-NL",
+                            {
+                                hour: "2-digit",
+                                minute: "2-digit"
+                            }
+                        )
+                    : "";
 
             return `
-            <div class="message">
+                <div class="message">
 
-                <b>${safe(m.name)}</b>
-                <small>${time}</small>
+                    <b>${safe(m.name)}</b>
 
-                <br>
+                    <small>${time}</small>
 
-                ${safe(m.text)}
+                    <br>
 
-            </div>
+                    ${safe(m.text)}
+
+                </div>
             `;
 
-        }).join("")
+        }).join("");
 
-        : "Nog geen berichten.";
-
-        box.scrollTop =
-            box.scrollHeight;
-    }
+    box.scrollTop =
+        box.scrollHeight;
+}
 }
 
 
