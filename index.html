@@ -1,2 +1,1347 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>De Hut 🏕️</title>
+
+<style>
+:root{
+    --green:#234d35;
+    --dark:#13251a;
+    --light:#f4f1e8;
+    --white:#fffdf8;
+    --orange:#d99a36;
+    --red:#b74335;
+}
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:var(--light);
+    color:#18231b;
+}
+
+header{
+    background:linear-gradient(135deg,var(--dark),var(--green));
+    color:white;
+    padding:30px 20px;
+    text-align:center;
+}
+
+header h1{
+    margin:0;
+    font-size:45px;
+}
+
+header p{
+    margin:8px 0 0;
+}
+
+nav{
+    background:white;
+    padding:10px;
+    display:flex;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+    position:sticky;
+    top:0;
+    z-index:10;
+    box-shadow:0 2px 8px #0002;
+}
+
+nav button{
+    border:0;
+    background:#eee;
+    padding:11px 16px;
+    border-radius:999px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+nav button.active{
+    background:var(--green);
+    color:white;
+}
+
+main{
+    max-width:1050px;
+    margin:30px auto;
+    padding:0 15px;
+}
+
+.section{
+    display:none;
+}
+
+.section.active{
+    display:block;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:var(--white);
+    padding:22px;
+    border-radius:18px;
+    box-shadow:0 4px 18px #0001;
+}
+
+h2{
+    margin-top:0;
+    color:var(--green);
+}
+
+label{
+    display:block;
+    margin-top:13px;
+    margin-bottom:5px;
+    font-weight:bold;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    font-size:16px;
+}
+
+button{
+    font-family:inherit;
+}
+
+.primary{
+    background:var(--green);
+    color:white;
+    border:0;
+    padding:12px 17px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:14px;
+}
+
+.primary:hover{
+    background:#316846;
+}
+
+.now{
+    background:var(--orange);
+    color:white;
+    border:0;
+    padding:12px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.danger{
+    background:var(--red);
+    color:white;
+    border:0;
+    padding:7px 10px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.time-row{
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:8px;
+}
+
+.stat{
+    text-align:center;
+}
+
+.stat b{
+    display:block;
+    font-size:38px;
+    color:var(--green);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th,td{
+    text-align:left;
+    padding:12px;
+    border-bottom:1px solid #ddd;
+}
+
+th{
+    color:var(--green);
+}
+
+.rank{
+    font-size:25px;
+    width:60px;
+}
+
+.task{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:12px 0;
+    border-bottom:1px solid #ddd;
+}
+
+.task input{
+    width:auto;
+}
+
+.task-text{
+    flex:1;
+}
+
+.done{
+    text-decoration:line-through;
+    color:#888;
+}
+
+.chat{
+    height:400px;
+    overflow-y:auto;
+    background:#efede6;
+    border-radius:12px;
+    padding:12px;
+}
+
+.message{
+    background:white;
+    padding:10px 13px;
+    border-radius:12px;
+    margin:8px 0;
+}
+
+.message-name{
+    font-weight:bold;
+    color:var(--green);
+}
+
+.message-time{
+    color:#777;
+    font-size:12px;
+}
+
+.small{
+    color:#687268;
+    font-size:13px;
+}
+
+.error{
+    color:var(--red);
+    font-weight:bold;
+}
+
+.success{
+    color:#258442;
+    font-weight:bold;
+}
+
+#userInfo{
+    text-align:center;
+    padding:10px;
+    background:#e5eadf;
+}
+
+footer{
+    text-align:center;
+    padding:40px 20px;
+    color:#687268;
+}
+
+@media(max-width:600px){
+    header h1{font-size:35px}
+    nav{
+        justify-content:flex-start;
+        overflow-x:auto;
+    }
+    nav button{flex-shrink:0}
+    .card{padding:17px}
+    .time-row{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>🏕️ De Hut</h1>
+    <p>Uren • Leaderboard • To-do • Chat</p>
+</header>
+
+<div id="userInfo">
+    <span id="loginStatus">Niet ingelogd</span>
+    <button
+        id="logoutButton"
+        class="danger"
+        style="display:none;margin-left:10px"
+        onclick="logout()">
+        Uitloggen
+    </button>
+</div>
+
+<nav id="mainNav" style="display:none">
+
+    <button class="active" onclick="showSection('home',this)">
+        🏠 Home
+    </button>
+
+    <button onclick="showSection('uren',this)">
+        ⏱️ Uren
+    </button>
+
+    <button onclick="showSection('leaderboard',this)">
+        🏆 Leaderboard
+    </button>
+
+    <button onclick="showSection('todo',this)">
+        ✅ To-do
+    </button>
+
+    <button onclick="showSection('chat',this)">
+        💬 Chat
+    </button>
+
+</nav>
+
+<main>
+
+<!-- LOGIN -->
+
+<section id="auth" class="section active">
+
+<div class="grid">
+
+<div class="card">
+
+<h2>🔐 Inloggen</h2>
+
+<label>E-mailadres</label>
+<input id="loginEmail" type="email" placeholder="jouw@email.nl">
+
+<label>Wachtwoord</label>
+<input id="loginPassword" type="password">
+
+<button class="primary" onclick="login()">
+Inloggen
+</button>
+
+<p id="loginMessage" class="small"></p>
+
+</div>
+
+<div class="card">
+
+<h2>👤 Account maken</h2>
+
+<label>Naam</label>
+<input id="registerName" placeholder="Bijv. Bram">
+
+<label>E-mailadres</label>
+<input id="registerEmail" type="email">
+
+<label>Wachtwoord</label>
+<input id="registerPassword" type="password">
+
+<button class="primary" onclick="register()">
+Account maken
+</button>
+
+<p id="registerMessage" class="small"></p>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- HOME -->
+
+<section id="home" class="section">
+
+<div class="grid">
+
+<div class="card stat">
+<b id="totalHours">0u</b>
+hut-uren
+</div>
+
+<div class="card stat">
+<b id="peopleCount">0</b>
+gebruikers
+</div>
+
+<div class="card stat">
+<b id="todoCount">0</b>
+openstaande taken
+</div>
+
+</div>
+
+<br>
+
+<div class="card">
+
+<h2>🏕️ Welkom bij De Hut</h2>
+
+<p>
+Hier kun je je hut-uren bijhouden, het leaderboard bekijken,
+taken beheren en met elkaar chatten.
+</p>
+
+</div>
+
+</section>
+
+
+<!-- UREN -->
+
+<section id="uren" class="section">
+
+<div class="grid">
+
+<div class="card">
+
+<h2>⏱️ Uren registreren</h2>
+
+<label>Naam</label>
+<input id="name" readonly>
+
+<label>Datum</label>
+<input id="date" type="date">
+
+<label>Aankomst</label>
+
+<div class="time-row">
+
+<input id="start" type="time">
+
+<button class="now" onclick="setNow('start')">
+📍 NU
+</button>
+
+</div>
+
+<label>Vertrek</label>
+
+<div class="time-row">
+
+<input id="end" type="time">
+
+<button class="now" onclick="setNow('end')">
+🏁 NU
+</button>
+
+</div>
+
+<button class="primary" onclick="addVisit()">
+💾 Uren opslaan
+</button>
+
+<p id="visitResult" class="small"></p>
+
+</div>
+
+
+<div class="card">
+
+<h2>📋 Registraties</h2>
+
+<div id="visits">
+Nog geen registraties.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- LEADERBOARD -->
+
+<section id="leaderboard" class="section">
+
+<div class="card">
+
+<h2>🏆 Hut Leaderboard</h2>
+
+<table>
+
+<thead>
+<tr>
+<th>#</th>
+<th>Naam</th>
+<th>Uren</th>
+</tr>
+</thead>
+
+<tbody id="leaderboardBody"></tbody>
+
+</table>
+
+</div>
+
+</section>
+
+
+<!-- TODO -->
+
+<section id="todo" class="section">
+
+<div class="grid">
+
+<div class="card">
+
+<h2>➕ Nieuwe taak</h2>
+
+<input id="taskInput" placeholder="Bijv. hout halen">
+
+<button class="primary" onclick="addTask()">
+➕ Taak toevoegen
+</button>
+
+</div>
+
+<div class="card">
+
+<h2>✅ To-do lijst</h2>
+
+<div id="tasks">
+Geen taken.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- CHAT -->
+
+<section id="chat" class="section">
+
+<div class="card">
+
+<h2>💬 Hut-chat</h2>
+
+<div id="messages" class="chat">
+Nog geen berichten.
+</div>
+
+<input
+    id="chatText"
+    placeholder="Typ een bericht..."
+    onkeydown="if(event.key==='Enter')sendMessage()"
+>
+
+<button class="primary" onclick="sendMessage()">
+💬 Versturen
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+🏕️ De Hut
+<br>
+<span class="small">Samen maken we de hut beter.</span>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+/* =====================================
+   SUPABASE
+===================================== */
+
 const SUPABASE_URL =
 "https://xmotmmbwcehbtjwgzbor.supabase.co";
+
+const SUPABASE_KEY =
+"sb_publishable_Rf-lqHRdExR_PeoKaD25Xw_qaWeHH0Y";
+
+const supabaseClient =
+supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+);
+
+
+/* =====================================
+   HTML VEILIG MAKEN
+===================================== */
+
+function escapeHTML(text){
+
+    return String(text).replace(
+        /[&<>"']/g,
+        c => ({
+            "&":"&amp;",
+            "<":"&lt;",
+            ">":"&gt;",
+            '"':"&quot;",
+            "'":"&#039;"
+        }[c])
+    );
+
+}
+
+
+/* =====================================
+   TIJD NU
+===================================== */
+
+function setNow(id){
+
+    const now = new Date();
+
+    const h =
+        String(now.getHours()).padStart(2,"0");
+
+    const m =
+        String(now.getMinutes()).padStart(2,"0");
+
+    document.getElementById(id).value =
+        h + ":" + m;
+}
+
+
+/* =====================================
+   NAVIGATIE
+===================================== */
+
+function showSection(id,button){
+
+    document
+        .querySelectorAll(".section")
+        .forEach(s =>
+            s.classList.remove("active")
+        );
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+    document
+        .querySelectorAll("nav button")
+        .forEach(b =>
+            b.classList.remove("active")
+        );
+
+    button.classList.add("active");
+
+}
+
+
+/* =====================================
+   REGISTER
+===================================== */
+
+async function register(){
+
+    const name =
+        document.getElementById("registerName")
+        .value.trim();
+
+    const email =
+        document.getElementById("registerEmail")
+        .value.trim();
+
+    const password =
+        document.getElementById("registerPassword")
+        .value;
+
+    const msg =
+        document.getElementById("registerMessage");
+
+    if(!name || !email || !password){
+
+        msg.textContent =
+            "Vul alles in.";
+
+        msg.className = "error";
+
+        return;
+    }
+
+    const {error} =
+        await supabaseClient.auth.signUp({
+
+            email,
+            password,
+
+            options:{
+                data:{
+                    name:name
+                }
+            }
+
+        });
+
+    if(error){
+
+        msg.textContent =
+            error.message;
+
+        msg.className = "error";
+
+        return;
+    }
+
+    msg.textContent =
+        "✅ Account aangemaakt!";
+
+    msg.className = "success";
+}
+
+
+/* =====================================
+   LOGIN
+===================================== */
+
+async function login(){
+
+    const email =
+        document.getElementById("loginEmail")
+        .value.trim();
+
+    const password =
+        document.getElementById("loginPassword")
+        .value;
+
+    const msg =
+        document.getElementById("loginMessage");
+
+    const {error} =
+        await supabaseClient.auth
+        .signInWithPassword({
+
+            email,
+            password
+
+        });
+
+    if(error){
+
+        msg.textContent =
+            "Inloggen mislukt: " +
+            error.message;
+
+        msg.className = "error";
+
+        return;
+    }
+
+    await setupUser();
+}
+
+
+/* =====================================
+   LOGOUT
+===================================== */
+
+async function logout(){
+
+    await supabaseClient.auth.signOut();
+
+    location.reload();
+
+}
+
+
+/* =====================================
+   USER
+===================================== */
+
+async function getUser(){
+
+    const {data:{user}} =
+        await supabaseClient.auth.getUser();
+
+    return user;
+}
+
+
+/* =====================================
+   USER INSTELLEN
+===================================== */
+
+async function setupUser(){
+
+    const user =
+        await getUser();
+
+    if(!user){
+
+        document
+            .getElementById("mainNav")
+            .style.display="none";
+
+        return;
+    }
+
+    const name =
+        user.user_metadata?.name ||
+        user.email.split("@")[0];
+
+    document.getElementById("name").value =
+        name;
+
+    document.getElementById("loginStatus")
+        .innerHTML =
+        "👋 Ingelogd als <b>" +
+        escapeHTML(name) +
+        "</b>";
+
+    document.getElementById("logoutButton")
+        .style.display="inline-block";
+
+    document.getElementById("mainNav")
+        .style.display="flex";
+
+    document.getElementById("auth")
+        .classList.remove("active");
+
+    document.getElementById("home")
+        .classList.add("active");
+
+    await loadData();
+}
+
+
+/* =====================================
+   UREN OPSLAAN
+===================================== */
+
+async function addVisit(){
+
+    const user =
+        await getUser();
+
+    if(!user)return;
+
+    const name =
+        document.getElementById("name").value;
+
+    const date =
+        document.getElementById("date").value;
+
+    const start =
+        document.getElementById("start").value;
+
+    const end =
+        document.getElementById("end").value;
+
+    if(!date || !start || !end){
+
+        alert("Vul alle velden in.");
+
+        return;
+    }
+
+    let s =
+        new Date("2000-01-01T"+start);
+
+    let e =
+        new Date("2000-01-01T"+end);
+
+    if(e<=s){
+
+        e.setDate(e.getDate()+1);
+    }
+
+    const hours =
+        (e-s)/3600000;
+
+    const {error} =
+        await supabaseClient
+        .from("visits")
+        .insert({
+
+            user_id:user.id,
+            name:name,
+            date:date,
+            start:start,
+            end:end,
+            hours:hours
+
+        });
+
+    if(error){
+
+        alert(
+            "Fout bij opslaan:\n"+
+            error.message
+        );
+
+        return;
+    }
+
+    document.getElementById("visitResult")
+        .textContent =
+        "✅ "+hours.toFixed(2)+" uur opgeslagen.";
+
+    await loadData();
+}
+
+
+/* =====================================
+   TAAK TOEVOEGEN
+===================================== */
+
+async function addTask(){
+
+    const user =
+        await getUser();
+
+    const input =
+        document.getElementById("taskInput");
+
+    const text =
+        input.value.trim();
+
+    if(!user || !text)return;
+
+    const {error} =
+        await supabaseClient
+        .from("tasks")
+        .insert({
+
+            user_id:user.id,
+            text:text,
+            done:false
+
+        });
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    input.value="";
+
+    await loadData();
+}
+
+
+/* =====================================
+   TAAK AAN/UIT
+===================================== */
+
+async function toggleTask(id,done){
+
+    const {error} =
+        await supabaseClient
+        .from("tasks")
+        .update({
+            done:!done
+        })
+        .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    await loadData();
+}
+
+
+/* =====================================
+   TAAK VERWIJDEREN
+===================================== */
+
+async function deleteTask(id){
+
+    const {error} =
+        await supabaseClient
+        .from("tasks")
+        .delete()
+        .eq("id",id);
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    await loadData();
+}
+
+
+/* =====================================
+   CHAT
+===================================== */
+
+async function sendMessage(){
+
+    const user =
+        await getUser();
+
+    const input =
+        document.getElementById("chatText");
+
+    const text =
+        input.value.trim();
+
+    if(!user || !text)return;
+
+    const name =
+        user.user_metadata?.name ||
+        user.email.split("@")[0];
+
+    const {error} =
+        await supabaseClient
+        .from("messages")
+        .insert({
+
+            user_id:user.id,
+            name:name,
+            text:text
+
+        });
+
+    if(error){
+
+        alert(error.message);
+
+        return;
+    }
+
+    input.value="";
+
+    await loadData();
+}
+
+
+/* =====================================
+   DATA LADEN
+===================================== */
+
+async function loadData(){
+
+    const user =
+        await getUser();
+
+    if(!user)return;
+
+
+    /* UREN */
+
+    const {data:visits,error:ve} =
+        await supabaseClient
+        .from("visits")
+        .select("*")
+        .order("date",{ascending:false});
+
+    if(ve){
+
+        console.error(ve);
+
+        return;
+    }
+
+
+    const totals={};
+
+    visits.forEach(v=>{
+
+        if(!totals[v.name])
+            totals[v.name]=0;
+
+        totals[v.name]+=Number(v.hours);
+
+    });
+
+
+    const names =
+        Object.keys(totals)
+        .sort((a,b)=>
+            totals[b]-totals[a]
+        );
+
+
+    /* LEADERBOARD */
+
+    const board =
+        document.getElementById(
+            "leaderboardBody"
+        );
+
+    if(!names.length){
+
+        board.innerHTML=`
+        <tr>
+        <td colspan="3">
+        Nog geen uren geregistreerd.
+        </td>
+        </tr>`;
+
+    }else{
+
+        board.innerHTML =
+            names.map((n,i)=>{
+
+                const medal =
+                    i===0 ? "🥇" :
+                    i===1 ? "🥈" :
+                    i===2 ? "🥉" :
+                    i+1;
+
+                return `
+                <tr>
+                <td class="rank">${medal}</td>
+                <td>${escapeHTML(n)}</td>
+                <td>${totals[n].toFixed(1)} uur</td>
+                </tr>`;
+
+            }).join("");
+
+    }
+
+
+    /* TOTAAL */
+
+    const total =
+        visits.reduce(
+            (s,v)=>s+Number(v.hours),
+            0
+        );
+
+    document.getElementById("totalHours")
+        .textContent =
+        total.toFixed(1)+"u";
+
+    document.getElementById("peopleCount")
+        .textContent =
+        names.length;
+
+
+    /* REGISTRATIES */
+
+    const visitBox =
+        document.getElementById("visits");
+
+    if(!visits.length){
+
+        visitBox.textContent =
+            "Nog geen registraties.";
+
+    }else{
+
+        visitBox.innerHTML =
+            visits.map(v=>`
+
+            <div class="small">
+
+            <b>${escapeHTML(v.name)}</b>
+
+            <br>
+
+            ${v.date}
+
+            <br>
+
+            ${v.start} – ${v.end}
+
+            = ${Number(v.hours).toFixed(2)} uur
+
+            </div>
+
+            <hr>
+
+            `).join("");
+
+    }
+
+
+    /* TAKEN */
+
+    const {data:tasks,error:te} =
+        await supabaseClient
+        .from("tasks")
+        .select("*")
+        .order("created_at");
+
+    if(te){
+
+        console.error(te);
+
+    }else{
+
+        document.getElementById("todoCount")
+            .textContent =
+            tasks.filter(t=>!t.done).length;
+
+        const box =
+            document.getElementById("tasks");
+
+        if(!tasks.length){
+
+            box.textContent =
+                "🎉 Geen taken!";
+
+        }else{
+
+            box.innerHTML =
+                tasks.map(t=>`
+
+                <div class="task">
+
+                <input
+                    type="checkbox"
+                    ${t.done?"checked":""}
+                    onchange="toggleTask(${t.id},${t.done})"
+                >
+
+                <span
+                    class="task-text ${t.done?"done":""}"
+                >
+                    ${escapeHTML(t.text)}
+                </span>
+
+                <button
+                    class="danger"
+                    onclick="deleteTask(${t.id})"
+                >
+                    ×
+                </button>
+
+                </div>
+
+                `).join("");
+
+        }
+
+    }
+
+
+    /* CHAT */
+
+    const {data:messages,error:me} =
+        await supabaseClient
+        .from("messages")
+        .select("*")
+        .order("created_at");
+
+    if(me){
+
+        console.error(me);
+
+    }else{
+
+        const chat =
+            document.getElementById("messages");
+
+        if(!messages.length){
+
+            chat.innerHTML =
+                "<p class='small'>Nog geen berichten.</p>";
+
+        }else{
+
+            chat.innerHTML =
+                messages.map(m=>{
+
+                    const time =
+                        new Date(
+                            m.created_at
+                        ).toLocaleString(
+                            "nl-NL",
+                            {
+                                hour:"2-digit",
+                                minute:"2-digit"
+                            }
+                        );
+
+                    return `
+
+                    <div class="message">
+
+                    <span class="message-name">
+                    ${escapeHTML(m.name)}
+                    </span>
+
+                    <span class="message-time">
+                    ${time}
+                    </span>
+
+                    <br>
+
+                    ${escapeHTML(m.text)}
+
+                    </div>
+
+                    `;
+
+                }).join("");
+
+            chat.scrollTop =
+                chat.scrollHeight;
+
+        }
+
+    }
+
+}
+
+
+/* =====================================
+   DATUM VANDAAG
+===================================== */
+
+document.getElementById("date").value =
+    new Date()
+    .toISOString()
+    .slice(0,10);
+
+
+/* =====================================
+   START
+===================================== */
+
+supabaseClient.auth.onAuthStateChange(
+    async(event,session)=>{
+
+        if(session){
+
+            await setupUser();
+
+        }
+
+    }
+);
+
+setupUser();
+
+</script>
+
+</body>
+</html>
